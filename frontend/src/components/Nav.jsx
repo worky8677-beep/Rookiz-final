@@ -35,6 +35,18 @@ function NavButton({ icon, label, active = false, onClick }) {
   );
 }
 
+function IconBtn({ icon, onClick, children }) {
+  return (
+    <button
+      onClick={onClick}
+      className="size-9.5 bg-gray-50 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-100 transition-colors relative"
+    >
+      <FontAwesomeIcon icon={icon} className="text-lg text-gray-400" />
+      {children}
+    </button>
+  );
+}
+
 function NavProfile({ name = DEFAULT_NAME, zone = DEFAULT_ZONE }) {
   return (
     <button className="flex items-center h-11 w-fit md:w-[150px] bg-gray-50 rounded-full px-2.5 gap-2 hover:bg-gray-100 transition-colors cursor-pointer border-none outline-none">
@@ -59,8 +71,8 @@ export function Nav({ activeTab = "main" }) {
   const navigate = useNavigate();
 
   return (
-    <nav className="sticky top-0 z-50 w-full h-[80px] md:h-[120px] bg-white/80 backdrop-blur-md shadow-sm flex items-center justify-center px-4 md:px-10">
-      <div className="w-full max-w-[1200px] grid grid-cols-3 items-center">
+    <nav className="sticky top-0 z-50 w-full h-20 md:h-30 bg-white/80 backdrop-blur-md shadow-sm flex items-center justify-center px-4 md:px-10">
+      <div className="w-full max-w-content grid grid-cols-3 items-center">
 
         {/* 좌측: 로고 */}
         <div
@@ -94,16 +106,10 @@ export function Nav({ activeTab = "main" }) {
 
         {/* 우측: 액션 */}
         <div className="flex items-center justify-end gap-1">
-          <button
-            className="size-[38px] bg-gray-50 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-100 transition-colors"
-            onClick={() => navigate('/search')}
-          >
-            <FontAwesomeIcon icon={faMagnifyingGlass} className="text-lg text-gray-400" />
-          </button>
-          <button className="size-[38px] bg-gray-50 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-100 transition-colors relative">
-            <FontAwesomeIcon icon={faBell} className="text-lg text-gray-400" />
+          <IconBtn icon={faMagnifyingGlass} onClick={() => navigate('/search')} />
+          <IconBtn icon={faBell}>
             <div className="absolute top-[9px] right-[9px] size-2 bg-secondary-400 rounded-full" />
-          </button>
+          </IconBtn>
           <div className="ml-1">
             <NavProfile />
           </div>

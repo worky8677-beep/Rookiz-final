@@ -6,7 +6,7 @@ import { faCaretRight } from '@fortawesome/free-solid-svg-icons';
  */
 export function Header({ title, showViewAll = true, viewAllLink = '#' }) {
   return (
-    <div className="flex items-center justify-between w-full max-w-[1200px]">
+    <div className="flex items-center justify-between w-full max-w-content">
       <h2 className="text-2xl md:text-4xl font-black text-gray-800 tracking-tight md:leading-8">
         {title}
       </h2>

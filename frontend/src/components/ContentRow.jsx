@@ -58,7 +58,7 @@ export function ContentRow({
 
   function renderScroll() {
     return (
-      <div className="flex gap-4 md:gap-6 overflow-x-auto overflow-y-hidden pb-2 w-full max-w-[1200px] scrollbar-hide">
+      <div className="flex gap-4 md:gap-6 overflow-x-auto overflow-y-hidden pb-2 w-full max-w-content scrollbar-hide">
         {items.map((item) => (
           <Card
             key={item.id}

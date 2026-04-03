@@ -225,7 +225,7 @@ export default function DetailPage() {
                 </div>
               </div>
 
-              <button className="w-full h-[60px] bg-primary-500 hover:bg-primary-400 text-gray-950 font-extrabold text-lg rounded-2xl flex items-center justify-center gap-2.5 transition-colors shadow-lg">
+              <button className="w-full h-15 bg-primary-500 hover:bg-primary-400 text-gray-950 font-extrabold text-lg rounded-2xl flex items-center justify-center gap-2.5 transition-colors shadow-lg">
                 <FontAwesomeIcon icon={faPlay} className="text-base" />
                 <span>13화부터 이어보기</span>
               </button>

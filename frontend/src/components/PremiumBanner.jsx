@@ -10,7 +10,7 @@ export function PremiumBanner() {
           더 많은 혜택이 팡팡! 프리미엄으로 더 많은 프로필을 등록하세요!
         </p>
       </div>
-      <button className="bg-primary-500 text-primary-950 px-6 py-2.5 md:px-8 md:py-4 rounded-full md:rounded-[48px] font-black text-sm md:text-2xl shadow-lg relative z-10 hover:bg-primary-400 transition-all shrink-0">
+      <button className="bg-primary-500 text-primary-950 px-6 py-2.5 md:px-8 md:py-4 rounded-full md:rounded-4xl font-black text-sm md:text-2xl shadow-lg relative z-10 hover:bg-primary-400 transition-all shrink-0">
         보러가기
       </button>
     </div>

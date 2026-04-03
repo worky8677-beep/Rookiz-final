@@ -101,7 +101,7 @@ export default function MyPage() {
     <div className="min-h-screen bg-white flex flex-col">
       <Nav activeTab="mypage" />
 
-      <main className="flex-1 w-full max-w-[1280px] mx-auto px-4 py-10 md:px-10 md:py-20 flex flex-col gap-12 md:gap-20">
+      <main className="flex-1 w-full max-w-container mx-auto px-4 py-10 md:px-10 md:py-20 flex flex-col gap-12 md:gap-20">
 
         {/* ── 마이루 섹션 ── */}
         <section className="flex flex-col gap-5 md:gap-7">
@@ -319,7 +319,7 @@ export default function MyPage() {
 
           {/* 케어루 수정하기 버튼 */}
           <div className="flex justify-end">
-            <button className="flex items-center justify-center gap-1 bg-white border border-primary-500 rounded-[48px] h-[44px] w-[153px] text-sm font-bold text-primary-800 hover:bg-primary-500 hover:text-white transition-colors duration-200">
+            <button className="flex items-center justify-center gap-1 bg-white border border-primary-500 rounded-4xl h-[44px] w-[153px] text-sm font-bold text-primary-800 hover:bg-primary-500 hover:text-white transition-colors duration-200">
               <FontAwesomeIcon icon={faPencil} className="text-base" />
               케어루 수정하기
             </button>
