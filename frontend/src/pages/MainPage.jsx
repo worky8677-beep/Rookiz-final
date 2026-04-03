@@ -50,7 +50,7 @@ export default function MainPage({ mode = "kids" }) {
   const openDetailById = (id) => navigate(`/movie/${id}`);
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center">
+    <div className={`min-h-screen flex flex-col items-center ${isKids ? "bg-green-100/50" : "bg-blue-100/50"}`}>
       <Nav activeTab="main" />
 
       <HeroBanner image={getImageUrl(trending[0]?.backdrop_path || trending[0]?.poster_path, "original")} title="슈퍼 히어로 특공대!" desc="슈퍼히어로가 꿈인 승아는 친구들을 모아 특공대를 만든다!" subDesc="승아와 친구들의 좌충우돌 도전기" onPlay={() => trending[0] && openDetailById(trending[0].id)} onDetail={() => trending[0] && openDetailById(trending[0].id)} />
