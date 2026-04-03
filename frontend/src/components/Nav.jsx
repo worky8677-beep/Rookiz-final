@@ -1,5 +1,5 @@
 import { twMerge } from 'tailwind-merge';
-import { useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faHouse, faHeart, faCircleUser, faMagnifyingGlass,
@@ -75,12 +75,9 @@ export function Nav({ activeTab = "main" }) {
       <div className="w-full max-w-content grid grid-cols-3 items-center">
 
         {/* 좌측: 로고 */}
-        <div
-          className="flex items-center select-none cursor-pointer"
-          onClick={() => navigate('/')}
-        >
+        <Link to="/home" className="flex items-center select-none">
           <img src="/LOGO.svg" alt="ROOKIZ" className="h-8 md:h-16 w-auto" />
-        </div>
+        </Link>
 
         {/* 중앙: 네비게이션 */}
         <div className="flex items-center justify-center gap-2 md:gap-4">
@@ -88,7 +85,7 @@ export function Nav({ activeTab = "main" }) {
             icon={faHouse}
             label="메인"
             active={activeTab === "main"}
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/home')}
           />
           <NavButton
             icon={faHeart}

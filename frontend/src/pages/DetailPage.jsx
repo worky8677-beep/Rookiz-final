@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router";
+import { useParams, useNavigate, useSearchParams } from "react-router";
 import { twMerge } from "tailwind-merge";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -11,7 +11,7 @@ import {
   faChevronRight,
   faPlay,
 } from "@fortawesome/free-solid-svg-icons";
-import { fetchMovieDetail, fetchMovieVideos, fetchSimilarMovies, getImageUrl } from "../api/api";
+import { fetchMovieDetail, fetchMovieVideos, fetchSimilarMovies, fetchTvDetail, fetchTvVideos, fetchSimilarTv, getImageUrl } from "../api/api";
 import { Nav } from "../components/Nav";
 import { Button } from "../components/Button";
 import { Footer } from "../components/Footer";
@@ -131,6 +131,9 @@ function TabBtn({ label, active, onClick }) {
 export default function DetailPage() {
   const { movieId } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const isTv = searchParams.get("type") === "tv";
+  const lang = searchParams.get("lang");
   const [movie, setMovie] = useState(null);
   const [videos, setVideos] = useState([]);
   const [similar, setSimilar] = useState([]);
@@ -144,9 +147,9 @@ export default function DetailPage() {
       setLoading(true);
       try {
         const [m, v, s] = await Promise.all([
-          fetchMovieDetail(movieId),
-          fetchMovieVideos(movieId),
-          fetchSimilarMovies(movieId),
+          isTv ? fetchTvDetail(movieId, lang) : fetchMovieDetail(movieId),
+          isTv ? fetchTvVideos(movieId, lang) : fetchMovieVideos(movieId),
+          isTv ? fetchSimilarTv(movieId, lang) : fetchSimilarMovies(movieId),
         ]);
         setMovie(m);
         setVideos(v);
@@ -186,7 +189,7 @@ export default function DetailPage() {
           <VideoPlayer
             youtubeKey={trailer?.key}
             poster={poster}
-            title={movie.title}
+            title={movie.title || movie.name}
             subtitle={`시즌 2 · ${DEFAULT_EP_ID}화 - 우주의 신비`}
             onBack={() => navigate(-1)}
             className="max-h-[560px]"
@@ -201,7 +204,7 @@ export default function DetailPage() {
                     <Chip variant="kids" label="키즈 4~7세" />
                     <Chip variant="new" label="신규" />
                   </div>
-                  <h1 className="text-3xl font-extrabold text-gray-950 leading-tight">{movie.title}</h1>
+                  <h1 className="text-3xl font-extrabold text-gray-950 leading-tight">{movie.title || movie.name}</h1>
                   <p className="text-base text-gray-300 font-medium">· 24화 · 모험/판타지</p>
                   <p className="text-base text-gray-600 leading-relaxed font-medium mt-1 max-w-[800px]">
                     {movie.overview || "꼬마 탐험가 루나와 친구들이 신비로운 우주를 탐험하며 펼치는 신나는 모험! 별자리의 비밀을 풀고, 외계인 친구들과 우정을 나누며 성장하는 이야기를 담았어요."}
@@ -278,10 +281,10 @@ export default function DetailPage() {
                     <div
                       key={m.id}
                       className="cursor-pointer"
-                      onClick={() => navigate(`/movie/${m.id}`)}
+                      onClick={() => navigate(`/movie/${m.id}${isTv ? '?type=tv' : ''}`)}
                     >
                       <Card
-                        title={m.title}
+                        title={m.title || m.name}
                         image={getImageUrl(m.poster_path, "w300")}
                         size="sm"
                         className="aspect-[3/4] rounded-3_5xl"

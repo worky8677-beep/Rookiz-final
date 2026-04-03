@@ -1,8 +1,14 @@
+import { Link } from 'react-router';
 import { twMerge } from 'tailwind-merge';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShield, faMedal, faGlobe, faHeadset } from '@fortawesome/free-solid-svg-icons';
 
-const LINKS = ["이용약관", "개인정보처리방침", "자녀 보호 설정", "고객센터"];
+const LINKS = [
+  { label: "이용약관", to: "/terms" },
+  { label: "개인정보처리방침", to: "/privacy" },
+  { label: "자녀 보호 설정", to: "/parental" },
+  { label: "고객센터", to: "/support" },
+];
 const SOCIAL_ICONS = [faGlobe, faHeadset];
 
 export function Footer({ className }) {
@@ -37,10 +43,10 @@ export function Footer({ className }) {
 
         {/* 링크 */}
         <div className="flex flex-wrap gap-x-8 gap-y-2 md:gap-12">
-          {LINKS.map((label) => (
-            <a key={label} href="#" className="text-sm text-gray-400 font-medium hover:text-gray-600">
+          {LINKS.map(({ label, to }) => (
+            <Link key={label} to={to} className="text-sm text-gray-400 font-medium hover:text-gray-600">
               {label}
-            </a>
+            </Link>
           ))}
         </div>
 

@@ -54,6 +54,7 @@ const KIDS_PARAMS = {
 const JUNIOR_PARAMS = {
   with_genres: "12,16,10751",
   certification_country: "US",
+  "certification.gte": "PG",
   "certification.lte": "PG",
 };
 
@@ -77,6 +78,13 @@ export const fetchLatestKidsMovies = () =>
 export const fetchKidsMoviesByPage = (page = 1) =>
   discoverMovies(KIDS_PARAMS, { sort_by: "popularity.desc", page });
 
+export const fetchLatestKidsMoviesByPage = (page = 1) =>
+  discoverMovies(KIDS_PARAMS, {
+    sort_by: "release_date.desc",
+    "primary_release_date.lte": todayDate(),
+    page,
+  });
+
 // ── 주니어 (8~12세) ───────────────────────────────────────────
 
 export const fetchJuniorMovies = () =>
@@ -97,6 +105,19 @@ export const fetchJuniorDrama = () =>
 export const fetchJuniorMoviesByPage = (page = 1) =>
   discoverMovies(JUNIOR_PARAMS, { sort_by: "popularity.desc", page });
 
+export const fetchLatestJuniorMoviesByPage = (page = 1) =>
+  discoverMovies(JUNIOR_PARAMS, {
+    sort_by: "release_date.desc",
+    "primary_release_date.lte": todayDate(),
+    page,
+  });
+
+export const fetchJuniorDramaByPage = (page = 1) =>
+  discoverMovies(
+    { ...JUNIOR_PARAMS, with_genres: "18,10751" },
+    { sort_by: "vote_average.desc", "vote_count.gte": 100, page },
+  );
+
 // ── 트렌딩 ────────────────────────────────────────────────────
 
 export const fetchTrending = () =>
@@ -104,21 +125,27 @@ export const fetchTrending = () =>
 
 // ── 영어 글로벌 키즈 ──────────────────────────────────────────
 
-const ENGLISH_KIDS_PARAMS = {
+const ENGLISH_BASE_PARAMS = {
   with_genres: "16,10762",
   original_language: "en",
+  language: "en-US",
   sort_by: "popularity.desc",
+  certification_country: "US",
 };
 
-export async function fetchEnglishKidsContent() {
-  try {
-    const res = await api.get("discover/tv", { params: ENGLISH_KIDS_PARAMS });
-    return res.data.results.filter((item) => item.original_language === "en" && item.poster_path);
-  } catch (error) {
-    console.error("영어 키즈 로드 실패:", error);
-    return [];
-  }
+const ENGLISH_KIDS_PARAMS = { ...ENGLISH_BASE_PARAMS, "certification.lte": "G" };
+const ENGLISH_JUNIOR_PARAMS = { ...ENGLISH_BASE_PARAMS, "certification.gte": "PG", "certification.lte": "PG" };
+
+function fetchEnglishContent(params) {
+  return api.get("discover/tv", { params })
+    .then((res) => res.data.results.filter((item) => item.original_language === "en" && item.poster_path))
+    .catch(() => []);
 }
+
+export const fetchEnglishKidsContent = () => fetchEnglishContent(ENGLISH_KIDS_PARAMS);
+export const fetchEnglishJuniorContent = () => fetchEnglishContent(ENGLISH_JUNIOR_PARAMS);
+export const fetchEnglishKidsContentByPage = (page = 1) => fetchEnglishContent({ ...ENGLISH_KIDS_PARAMS, page });
+export const fetchEnglishJuniorContentByPage = (page = 1) => fetchEnglishContent({ ...ENGLISH_JUNIOR_PARAMS, page });
 
 // ── 개별 영화 API ─────────────────────────────────────────────
 
@@ -147,3 +174,32 @@ export const fetchSimilarMovies = (movieId) =>
 
 export const searchMovies = (query) =>
   fetchWithFallback("search/movie", { query, include_adult: false });
+
+// ── 개별 TV API ──────────────────────────────────────────────
+
+export const fetchTvDetail = async (tvId, lang) => {
+  try {
+    const params = lang ? { language: lang } : {};
+    const response = await api.get(`tv/${tvId}`, { params });
+    return response.data;
+  } catch (error) {
+    console.error("TV 상세 로드 실패:", error);
+    return null;
+  }
+};
+
+export const fetchTvVideos = async (tvId, lang) => {
+  try {
+    const params = lang ? { language: lang } : {};
+    const response = await api.get(`tv/${tvId}/videos`, { params });
+    return response.data.results;
+  } catch (error) {
+    console.error("TV 비디오 로드 실패:", error);
+    return [];
+  }
+};
+
+export const fetchSimilarTv = (tvId, lang) => {
+  const params = lang ? { language: lang } : {};
+  return fetchWithFallback(`tv/${tvId}/similar`, params);
+};

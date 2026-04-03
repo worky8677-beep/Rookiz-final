@@ -1,6 +1,11 @@
+import { useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
+
+function Skeleton({ className }) {
+  return <div className={twMerge('absolute inset-0 bg-gray-200 animate-pulse', className)} />;
+}
 
 /**
  * Card — 범용 콘텐츠 카드
@@ -13,16 +18,21 @@ import { faStar } from '@fortawesome/free-solid-svg-icons';
  * variant="poster"  전용: badge — <RatingBadge /> | <EngBadge /> | null
  */
 export function Card({ variant = 'default', title, image, size = 'md', badge, className, children, onClick }) {
+  const [posterLoaded, setPosterLoaded] = useState(false);
+  const [defaultLoaded, setDefaultLoaded] = useState(false);
+
   if (variant === 'poster') {
     return (
       <div
         className="aspect-[3/4] md:h-[360px] rounded-2xl md:rounded-4xl overflow-hidden relative group cursor-pointer shadow-sm"
         onClick={onClick}
       >
+        {!posterLoaded && <Skeleton />}
         <img
           src={image}
           alt={title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+          className={twMerge('w-full h-full object-cover group-hover:scale-105 transition-transform duration-700', !posterLoaded && 'opacity-0')}
+          onLoad={() => setPosterLoaded(true)}
         />
         <div className="absolute inset-0 overlay-poster" />
         <div className="absolute bottom-4 left-4 right-3 md:bottom-6 md:left-6 md:right-4 text-white text-sm md:text-xl font-black leading-snug line-clamp-2">
@@ -54,11 +64,13 @@ export function Card({ variant = 'default', title, image, size = 'md', badge, cl
         className
       )}
     >
+      {image && !defaultLoaded && <Skeleton />}
       {image && (
         <img
           src={image}
           alt={title}
-          className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+          className={twMerge('absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700', !defaultLoaded && 'opacity-0')}
+          onLoad={() => setDefaultLoaded(true)}
         />
       )}
       <div className="absolute inset-0 overlay-card" />

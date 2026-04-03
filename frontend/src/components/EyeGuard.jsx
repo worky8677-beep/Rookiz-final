@@ -6,7 +6,7 @@ import {
   STATUS_BG_LIGHT,
   STATUS_BORDER,
   GAUGE_BG,
-} from "../constants/eyeGuard";
+} from "../hooks/eyeGuard";
 
 export function EyeGuard() {
   const { videoRef, status, ratio, running, start, stop } = useEyeGuard();

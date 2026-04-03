@@ -13,6 +13,7 @@ $ARGUMENTS 파일을 아래 기준으로 검사한다.
 - TypeScript(.ts/.tsx) 파일 혼입
 - 하드코딩 색상값 (#fff, rgb 등) → CSS 변수로 교체
 - createBrowserRouter를 main.jsx 외 파일에서 사용
+- SPA 방식의 링크
 
 **경고 (WARNING)**
 - FontAwesome 외 아이콘 라이브러리 사용

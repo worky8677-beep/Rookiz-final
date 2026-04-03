@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { twMerge } from "tailwind-merge";
 import { useEyeGuard, WARN_RATIO } from "../hooks/useEyeGuard";
-import { EYE_STATUS, STATUS_TEXT, GAUGE_BG } from "../constants/eyeGuard";
+import { EYE_STATUS, STATUS_TEXT, GAUGE_BG } from "../hooks/eyeGuard";
 
 function Widget() {
   const dragRef = useRef({ dragging: false, ox: 0, oy: 0 });
