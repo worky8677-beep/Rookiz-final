@@ -38,7 +38,6 @@ export default function CategoryPage() {
   // 최신 state를 ref에 동기화 — 디바운스 콜백이 stale closure 참조 방지
   stateRef.current = { loading, hasMore, movies, visibleRows, page, mode };
 
-  // ── 초기 로드 ──
   useEffect(() => {
     const fetchFn = mode === "junior" ? fetchJuniorMoviesByPage : fetchKidsMoviesByPage;
     setLoading(true);
@@ -142,7 +141,6 @@ export default function CategoryPage() {
     };
   }, [movies, visibleRows]);
 
-  // ── 컴포넌트 언마운트 시 전체 정리 ──
   useEffect(() => {
     return () => {
       clearTimeout(debounceRef.current);

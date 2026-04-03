@@ -17,7 +17,7 @@ export function StepIndicator({ current = 1, className }) {
             {i > 0 && (
               <div
                 className={twMerge(
-                  "w-10 h-[2px]",
+                  "w-10 h-0.5",
                   isDone || isActive ? "bg-primary-500" : "bg-gray-100"
                 )}
               />

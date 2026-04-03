@@ -14,7 +14,7 @@ const ICONS = {
   back:       "https://www.figma.com/api/mcp/asset/e832e8b4-1b35-45bc-8a96-621e43ea64de",
 };
 
-const CTRL_SIZE = { sm: "size-[33px]", md: "size-[38px]" };
+const CTRL_SIZE = { sm: "size-[33px]", md: "size-9.5" };
 const ICON_SIZE = { sm: "size-[15px]", md: "size-[17px]", lg: "size-4" };
 
 /** 뒤로가기 버튼 */
@@ -23,7 +23,7 @@ function BackBtn({ onClick }) {
     <button
       onClick={onClick}
       aria-label="뒤로가기"
-      className="flex items-center justify-center size-[38px] rounded-full bg-gray-950/60 hover:bg-gray-950/80 transition-colors shrink-0"
+      className="flex items-center justify-center size-9.5 rounded-full bg-gray-950/60 hover:bg-gray-950/80 transition-colors shrink-0"
     >
       <img src={ICONS.back} alt="" className="size-[21px] object-contain" />
     </button>
@@ -49,7 +49,7 @@ function CtrlBtn({ icon, iconSize = "md", size = "md", onClick, className }) {
 /** 자막 버튼 */
 function CaptionBtn() {
   return (
-    <button className="flex items-center justify-center size-[38px] rounded-full bg-primary-500 hover:bg-primary-400 transition-colors shrink-0">
+    <button className="flex items-center justify-center size-9.5 rounded-full bg-primary-500 hover:bg-primary-400 transition-colors shrink-0">
       <img src={ICONS.caption} alt="자막" className="size-4 object-contain" />
     </button>
   );
@@ -66,7 +66,7 @@ function PlayPauseBtn({ playing, onClick }) {
       <img
         src={playing ? ICONS.pause : ICONS.play}
         alt={playing ? "일시정지" : "재생"}
-        className="size-[50px] md:size-[60px] object-contain"
+        className="size-12.5 md:size-15 object-contain"
       />
     </button>
   );

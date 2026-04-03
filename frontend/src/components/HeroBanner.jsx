@@ -3,7 +3,7 @@ import { faStar, faPlay, faCircleInfo } from "@fortawesome/free-solid-svg-icons"
 
 export function HeroBanner({ image, title, desc, subDesc, onPlay, onDetail }) {
   return (
-    <section className="w-full max-w-[1280px] px-4 md:px-10 pt-4 md:pt-6 pb-6 md:pb-10">
+    <section className="w-full max-w-container px-4 md:px-10 pt-4 md:pt-6 pb-6 md:pb-10">
       <div className="relative w-full aspect-[16/9] md:aspect-[2/1] rounded-2xl md:rounded-3xl overflow-hidden shadow-sm mx-auto">
         <img
           src={image}

@@ -23,7 +23,7 @@ export function EyeGuard() {
         <div className="text-2xl font-bold text-dark-50">눈 거리 보호 앱</div>
       </div>
 
-      <div className="relative w-[280px] h-[210px] rounded-2xl overflow-hidden bg-dark-600 border border-dark-900">
+      <div className="relative w-eye-guard h-[210px] rounded-2xl overflow-hidden bg-dark-600 border border-dark-900">
         <video
           ref={videoRef}
           muted
@@ -49,7 +49,7 @@ export function EyeGuard() {
         )}
       </div>
 
-      <div className="w-[280px]">
+      <div className="w-eye-guard">
         <div className="flex justify-between text-xs text-dark-500 mb-1.5">
           <span>멀다 (안전)</span>
           <span>가깝다 (위험)</span>
@@ -67,7 +67,7 @@ export function EyeGuard() {
 
       <div
         className={twMerge(
-          "w-[280px] min-h-[72px] rounded-xl flex flex-col items-center justify-center gap-1 p-3 border transition-all duration-300",
+          "w-eye-guard min-h-[72px] rounded-xl flex flex-col items-center justify-center gap-1 p-3 border transition-all duration-300",
           running ? `${STATUS_BG_LIGHT[status]} ${STATUS_BORDER[status]}` : "bg-dark-600 border-dark-500"
         )}
       >

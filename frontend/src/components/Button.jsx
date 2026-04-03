@@ -50,7 +50,7 @@ export function Button({
       <button
         onClick={onClick}
         className={twMerge(
-          "flex items-center justify-center gap-1.5 md:gap-2 h-12 md:h-[60px] px-4 md:px-[22px] py-2.5 md:py-4 rounded-full border-2 transition-all duration-200 cursor-pointer shadow-sm font-sans shrink-0",
+          "flex items-center justify-center gap-1.5 md:gap-2 h-12 md:h-15 px-4 md:px-[22px] py-2.5 md:py-4 rounded-full border-2 transition-all duration-200 cursor-pointer shadow-sm font-sans shrink-0",
           active ? activeStyle : "bg-gray-50 border-gray-300 text-gray-300 hover:bg-white",
           className
         )}

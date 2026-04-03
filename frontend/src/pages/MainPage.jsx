@@ -37,14 +37,19 @@ export default function MainPage({ mode = "kids" }) {
   const [drama, setDrama] = useState([]);
   const [latestMovies, setLatestMovies] = useState([]);
   const [englishContent, setEnglishContent] = useState([]);
+  const [error, setError] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchTrending().then(setTrending).catch(console.error);
-    (isKids ? fetchKidsMovies : fetchJuniorMovies)().then(setMovies).catch(console.error);
-    (isKids ? fetchLatestKidsMovies : fetchLatestJuniorMovies)().then(setLatestMovies).catch(console.error);
-    fetchEnglishKidsContent().then(setEnglishContent).catch(console.error);
-    if (!isKids) fetchJuniorDrama().then(setDrama).catch(console.error);
+    setError(false);
+    const safe = (promise, setter) =>
+      promise.then(setter).catch(() => setError(true));
+
+    safe(fetchTrending(), setTrending);
+    safe((isKids ? fetchKidsMovies : fetchJuniorMovies)(), setMovies);
+    safe((isKids ? fetchLatestKidsMovies : fetchLatestJuniorMovies)(), setLatestMovies);
+    safe(fetchEnglishKidsContent(), setEnglishContent);
+    if (!isKids) safe(fetchJuniorDrama(), setDrama);
   }, [isKids]);
 
   const openDetail = (item) => {
@@ -69,6 +74,12 @@ export default function MainPage({ mode = "kids" }) {
 
       <main className="w-full max-w-container flex flex-col gap-6 md:gap-10">
         <AgeTabGroup activeMode={mode} />
+
+        {error && (
+          <div className="mx-4 md:mx-10 bg-secondary-100 border border-secondary-500 rounded-2xl px-6 py-4 text-secondary-500 font-bold text-sm text-center">
+            콘텐츠를 불러오는 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.
+          </div>
+        )}
 
         <div className="flex flex-col gap-8 md:gap-10 pb-20">
           <ContentRow
