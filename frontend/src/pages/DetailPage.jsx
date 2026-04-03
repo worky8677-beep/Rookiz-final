@@ -64,7 +64,7 @@ function EpisodeCard({ episode, active, onClick }) {
         {isCompleted ? (
           <div className="absolute inset-0 bg-black/45 flex items-center justify-center">
             <div className="size-4.5 rounded-full bg-white/20 flex items-center justify-center border border-white/30">
-              <FontAwesomeIcon icon={faPlay} className="text-white text-[8px] translate-x-0.5" />
+              <FontAwesomeIcon icon={faPlay} className="text-white text-xxs translate-x-0.5" />
             </div>
           </div>
         ) : active ? (
@@ -95,13 +95,16 @@ function EpisodeCard({ episode, active, onClick }) {
         <h3 className="text-sm font-bold text-gray-950 truncate mt-0.5">
           {episode.episode_number}화 - {episode.name || "신나는 모험"}
         </h3>
-        <span className="text-[12px] text-gray-200 font-medium mt-0.5">{episode.runtime || 18}분</span>
+        <span className="text-xs text-gray-200 font-medium mt-0.5">{episode.runtime || 18}분</span>
       </div>
 
       <FontAwesomeIcon icon={faChevronRight} className="text-gray-200 group-hover:text-gray-400 transition-colors" />
     </div>
   );
 }
+
+const DEFAULT_SEASON = 2;
+const DEFAULT_EP_ID = 13;
 
 const MOCK_EPISODES = [
   { id: 1, episode_number: 1, name: "우주의 신비", runtime: 18, progress: 100, still_path: null },
@@ -111,6 +114,21 @@ const MOCK_EPISODES = [
   { id: 5, episode_number: 5, name: "은하수 기차", runtime: 18, progress: 0, still_path: null },
   { id: 6, episode_number: 6, name: "로봇 행성", runtime: 18, progress: 0, still_path: null },
 ];
+
+function TabBtn({ label, active, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      className={twMerge(
+        "px-8 py-4 text-base font-bold relative transition-colors",
+        active ? "text-gray-950" : "text-gray-300"
+      )}
+    >
+      {label}
+      {active && <div className="absolute bottom-0 left-0 w-full h-0.75 bg-primary-500 rounded-full" />}
+    </button>
+  );
+}
 
 // ── DetailPage ─────────────────────────────────────────────────
 
@@ -123,8 +141,8 @@ export default function DetailPage() {
   const [loading, setLoading] = useState(true);
 
   const [activeTab, setActiveTab] = useState("episodes");
-  const [selectedSeason, setSelectedSeason] = useState(2);
-  const [currentEpId, setCurrentEpId] = useState(13);
+  const [selectedSeason, setSelectedSeason] = useState(DEFAULT_SEASON);
+  const [currentEpId, setCurrentEpId] = useState(DEFAULT_EP_ID);
 
   useEffect(() => {
     const load = async () => {
@@ -217,43 +235,21 @@ export default function DetailPage() {
             <div className="mt-12">
               <div className="flex items-center gap-4 mb-6">
                 <span className="text-base font-bold text-gray-950">시즌</span>
-                <button
-                  onClick={() => setSelectedSeason(1)}
-                  className={twMerge(
-                    "px-6 py-2.5 rounded-xl text-base font-bold transition-all",
-                    selectedSeason === 1 ? "bg-primary-500 text-gray-950" : "bg-white text-gray-600 border border-gray-100"
-                  )}
-                >시즌 1</button>
-                <button
-                  onClick={() => setSelectedSeason(2)}
-                  className={twMerge(
-                    "px-6 py-2.5 rounded-xl text-base font-bold transition-all",
-                    selectedSeason === 2 ? "bg-primary-500 text-gray-950" : "bg-white text-gray-600 border border-gray-100"
-                  )}
-                >시즌 2</button>
+                {[1, 2].map((n) => (
+                  <button
+                    key={n}
+                    onClick={() => setSelectedSeason(n)}
+                    className={twMerge(
+                      "px-6 py-2.5 rounded-xl text-base font-bold transition-all",
+                      selectedSeason === n ? "bg-primary-500 text-gray-950" : "bg-white text-gray-600 border border-gray-100"
+                    )}
+                  >시즌 {n}</button>
+                ))}
               </div>
 
               <div className="flex border-b border-gray-100 mb-8">
-                <button
-                  onClick={() => setActiveTab("episodes")}
-                  className={twMerge(
-                    "px-8 py-4 text-base font-bold relative transition-colors",
-                    activeTab === "episodes" ? "text-gray-950" : "text-gray-300"
-                  )}
-                >
-                  에피소드
-                  {activeTab === "episodes" && <div className="absolute bottom-0 left-0 w-full h-[3px] bg-primary-500 rounded-full" />}
-                </button>
-                <button
-                  onClick={() => setActiveTab("info")}
-                  className={twMerge(
-                    "px-8 py-4 text-base font-bold relative transition-colors",
-                    activeTab === "info" ? "text-gray-950" : "text-gray-300"
-                  )}
-                >
-                  콘텐츠 정보
-                  {activeTab === "info" && <div className="absolute bottom-0 left-0 w-full h-[3px] bg-primary-500 rounded-full" />}
-                </button>
+                <TabBtn label="에피소드" active={activeTab === "episodes"} onClick={() => setActiveTab("episodes")} />
+                <TabBtn label="콘텐츠 정보" active={activeTab === "info"} onClick={() => setActiveTab("info")} />
               </div>
 
               {activeTab === "episodes" && (
@@ -293,7 +289,7 @@ export default function DetailPage() {
                         title={m.title}
                         image={getImageUrl(m.poster_path, "w300")}
                         size="sm"
-                        className="aspect-[3/4] rounded-[28px]"
+                        className="aspect-[3/4] rounded-3_5xl"
                       />
                     </div>
                   ))}

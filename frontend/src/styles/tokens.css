@@ -106,6 +106,11 @@
   --text-7xl:  72px;
   --text-7xl--line-height:  60px;
 
+  --text-xxs:               8px;
+  --text-xxs--line-height:  12px;
+  --text-4_5xl:             40px;
+  --text-4_5xl--line-height: 48px;
+
   /* ── Typography — Font Weight ────────────────────────────── */
 
   --font-weight-normal:    400;
@@ -146,7 +151,10 @@
   --spacing-16:  64px;
   --spacing-20:  80px;
   --spacing-24:  96px;
-  --spacing-32:  128px;
+  --spacing-0_75: 3px;
+  --spacing-32:   128px;
+  --spacing-12_5: 50px;
+  --spacing-25:   100px;
 
   /* ── Border Radius ───────────────────────────────────────── */
   /* Source: Radius.json                                       */
@@ -155,7 +163,9 @@
   --radius-2xl:  16px;
   --radius-3xl:  24px;
   --radius-4xl:  48px;
-  --radius-full: 999px;
+  --radius-full:    999px;
+  --radius-3_5xl:   28px;
+  --radius-card-xl: 32px;
 
   /* ── Shadows ─────────────────────────────────────────────── */
   /* Source: Shadow.json                                       */
@@ -163,10 +173,11 @@
   --shadow-sm:   0px 1px 3px 0px rgba(0,0,0,0.10), 0px 1px 2px -1px rgba(0,0,0,0.10);
   --shadow-md:   0px 10px 15px -3px rgba(0,0,0,0.10), 0px 4px 6px -4px rgba(0,0,0,0.10);
   --shadow-lg:   0px 20px 25px -5px rgba(0,0,0,0.10), 0px 8px 10px -6px rgba(0,0,0,0.10);
-  --shadow-xl:   0px 20px 25px -5px rgba(0,0,0,0.10), 0px 8px 10px -6px rgba(0,0,0,0.10);
-  --shadow-card: 0px 2px 8px 0px rgba(0,0,0,0.04);
+  --shadow-xl:   0px 25px 50px -12px rgba(0,0,0,0.25);
+  --shadow-card:       0px 2px 8px 0px rgba(0,0,0,0.04);
+  --shadow-green-glow: 0px 4px 4px 0px var(--color-green-300);
 
-  /* ── Status Colors (EyeGuard) ───────────────────────────── */
+  /* ── Status Colors ──────────────────────────────────────── */
 
   --color-status-inactive: #9CA3AF;
   --color-status-ok:       #22C55E;
@@ -174,7 +185,7 @@
   --color-status-danger:   #EF4444;
   --color-status-loading:  #6B7280;
 
-  /* ── Dark Theme Colors (EyeGuard full-page) ──────────────── */
+  /* ── Dark Theme Colors ───────────────────────────────────── */
 
   --color-dark-50:     #F8FAFC;
   --color-dark-300:    #94A3B8;
@@ -191,6 +202,15 @@
   --blur-md:  12px;
   --blur-lg:  16px;
   --blur-xl:  24px;
+
+  /* ── Widths ──────────────────────────────────────────────── */
+
+  --width-container:  1280px;
+  --width-searchbar:  1000px;
+  --width-onboard-md: 512px;
+  --width-onboard-sm: 384px;
+  --width-age-card:   248px;
+  --width-sticker:    200px;
 
 }
 
@@ -211,4 +231,11 @@
 
 @utility overlay-player {
   background: linear-gradient(180deg, color-mix(in srgb, black 55%, transparent), transparent, color-mix(in srgb, black 80%, transparent));
+}
+
+/* ── Keyframes ──────────────────────────────────────────────── */
+
+@keyframes blink {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }

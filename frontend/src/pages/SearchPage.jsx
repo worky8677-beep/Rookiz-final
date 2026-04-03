@@ -7,7 +7,13 @@ import { Searchbar } from '../components/Searchbar';
 import { ContentRow } from '../components/ContentRow';
 import { Card } from '../components/Card';
 
-const FORBIDDEN_GENRES = [18, 10749, 27, 80, 53, 9648];
+const GENRE_DRAMA = 18;
+const GENRE_ROMANCE = 10749;
+const GENRE_HORROR = 27;
+const GENRE_CRIME = 80;
+const GENRE_THRILLER = 53;
+const GENRE_MYSTERY = 9648;
+const FORBIDDEN_GENRES = [GENRE_DRAMA, GENRE_ROMANCE, GENRE_HORROR, GENRE_CRIME, GENRE_THRILLER, GENRE_MYSTERY];
 
 function filterByAge(movies, mode) {
   return movies.filter((movie) => {
@@ -72,19 +78,19 @@ export default function SearchPage() {
     <div className="min-h-screen bg-white flex flex-col font-sans">
       <Nav activeTab="main" />
 
-      <main className="flex-1 w-full max-w-[1280px] mx-auto px-6 py-10 md:py-20 flex flex-col gap-10 md:gap-16">
+      <main className="flex-1 w-full max-w-container mx-auto px-6 py-10 md:py-20 flex flex-col gap-10 md:gap-16">
         <div className="flex flex-col gap-6 items-center text-center">
           <h1 className="text-3xl md:text-5xl font-black text-gray-800">
             무엇을 찾고 있나요?
           </h1>
-          <Searchbar className="w-full max-w-[1000px]" onSearch={handleSearch} />
+          <Searchbar className="w-full max-w-searchbar" onSearch={handleSearch} />
         </div>
 
         {selectedMovie && (
-          <div className="bg-gray-50 rounded-[48px] p-8 md:p-12 flex flex-col md:flex-row gap-8 items-center border border-gray-100">
+          <div className="bg-gray-50 rounded-4xl p-8 md:p-12 flex flex-col md:flex-row gap-8 items-center border border-gray-100">
             <img 
               src={getImageUrl(selectedMovie.poster_path)} 
-              className="w-48 md:w-64 rounded-[32px] shadow-xl"
+              className="w-48 md:w-64 rounded-card-xl shadow-xl"
               alt={selectedMovie.title}
             />
             <div className="flex flex-col gap-4">
@@ -125,7 +131,7 @@ export default function SearchPage() {
                     title={movie.title}
                     image={getImageUrl(movie.poster_path)}
                     onClick={() => handleCardClick(movie)}
-                    className="cursor-pointer aspect-[3/4] rounded-[48px]"
+                    className="cursor-pointer aspect-[3/4] rounded-4xl"
                   />
                 ))
               ) : (

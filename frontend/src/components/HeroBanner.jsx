@@ -27,14 +27,14 @@ export function HeroBanner({ image, title, desc, subDesc, onPlay, onDetail }) {
           <div className="flex gap-2 md:gap-4 mt-1 md:mt-2">
             <button
               onClick={onPlay}
-              className="bg-primary-500 text-gray-700 px-4 py-2 md:px-8 md:py-4 rounded-[48px] flex items-center gap-1.5 md:gap-2 shadow-lg hover:bg-primary-400 transition-all font-bold text-sm md:text-2xl"
+              className="bg-primary-500 text-gray-700 px-4 py-2 md:px-8 md:py-4 rounded-4xl flex items-center gap-1.5 md:gap-2 shadow-lg hover:bg-primary-400 transition-all font-bold text-sm md:text-2xl"
             >
               <FontAwesomeIcon icon={faPlay} className="size-3 md:size-6" />
               <span>보러가기</span>
             </button>
             <button
               onClick={onDetail}
-              className="bg-white/20 backdrop-blur-sm border border-gray-50 text-gray-50 px-4 py-2 md:px-8 md:py-4 rounded-[48px] flex items-center gap-1.5 md:gap-2 shadow-lg hover:bg-white/30 transition-all font-bold text-sm md:text-2xl"
+              className="bg-white/20 backdrop-blur-sm border border-gray-50 text-gray-50 px-4 py-2 md:px-8 md:py-4 rounded-4xl flex items-center gap-1.5 md:gap-2 shadow-lg hover:bg-white/30 transition-all font-bold text-sm md:text-2xl"
             >
               <FontAwesomeIcon icon={faCircleInfo} className="size-3 md:size-6" />
               <span>더보기</span>

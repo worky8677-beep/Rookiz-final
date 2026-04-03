@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(wc:*)",
+      "Bash(grep -rn \"^[[:space:]]*//\" C:/Users/Administrator/Desktop/Rookiz/frontend/src/components --include=\"*.jsx\")"
+    ]
+  }
+}

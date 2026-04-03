@@ -11,13 +11,6 @@ const api = axios.create({
   },
 });
 
-export const chatApi = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
 // ── 이미지 URL ────────────────────────────────────────────────
 
 export const getImageUrl = (path, size = "w500") =>
@@ -73,13 +66,13 @@ function discoverMovies(baseParams, extra = {}) {
 export const fetchKidsMovies = () =>
   discoverMovies(KIDS_PARAMS, { sort_by: "popularity.desc" });
 
-export const fetchLatestKidsMovies = () => {
-  const today = new Date().toISOString().split("T")[0];
-  return discoverMovies(KIDS_PARAMS, {
+const todayDate = () => new Date().toISOString().split("T")[0];
+
+export const fetchLatestKidsMovies = () =>
+  discoverMovies(KIDS_PARAMS, {
     sort_by: "release_date.desc",
-    "primary_release_date.lte": today,
+    "primary_release_date.lte": todayDate(),
   });
-};
 
 export const fetchKidsMoviesByPage = (page = 1) =>
   discoverMovies(KIDS_PARAMS, { sort_by: "popularity.desc", page });
@@ -89,13 +82,11 @@ export const fetchKidsMoviesByPage = (page = 1) =>
 export const fetchJuniorMovies = () =>
   discoverMovies(JUNIOR_PARAMS, { sort_by: "popularity.desc" });
 
-export const fetchLatestJuniorMovies = () => {
-  const today = new Date().toISOString().split("T")[0];
-  return discoverMovies(JUNIOR_PARAMS, {
+export const fetchLatestJuniorMovies = () =>
+  discoverMovies(JUNIOR_PARAMS, {
     sort_by: "release_date.desc",
-    "primary_release_date.lte": today,
+    "primary_release_date.lte": todayDate(),
   });
-};
 
 export const fetchJuniorDrama = () =>
   discoverMovies(
@@ -113,15 +104,15 @@ export const fetchTrending = () =>
 
 // ── 영어 글로벌 키즈 ──────────────────────────────────────────
 
+const ENGLISH_KIDS_PARAMS = {
+  with_genres: "16,10762",
+  original_language: "en",
+  sort_by: "popularity.desc",
+};
+
 export async function fetchEnglishKidsContent() {
   try {
-    const res = await api.get("discover/tv", {
-      params: {
-        with_genres: "16,10762",
-        original_language: "en",
-        sort_by: "popularity.desc",
-      },
-    });
+    const res = await api.get("discover/tv", { params: ENGLISH_KIDS_PARAMS });
     return res.data.results.filter((item) => item.original_language === "en" && item.poster_path);
   } catch (error) {
     console.error("영어 키즈 로드 실패:", error);

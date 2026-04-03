@@ -27,9 +27,7 @@
 
 ### Tailwind CSS v4
 - **v4 전용 문법만 사용** — v3 하위 호환 고려 안 함
-- 디자인 토큰 소스: `/token/*.json` (Figma Variables 원본)
-- 테마 토큰은 `frontend/src/styles/tokens.css`의 `@theme` 블록으로 관리 (`tailwind.config.js` 무시)
-- **하드코딩 금지**: hex 색상(`#xxxxxx`), rgba 값 직접 입력 금지
+- **하드코딩 금지**
 - **유틸리티 클래스 우선**: 디자인 토큰에 있는 색상·크기는 반드시 클래스로 표현
   - 불투명도 조합: `bg-gray-950/60`, `bg-white/12` 등
   - 그라디언트: `bg-linear-[각도] from-* to-*`
@@ -86,6 +84,8 @@
 
 ### 프론트엔드
 - React 19
+- vite
+- react-complier
 - Tailwind CSS v4
 - React Router v7
 - react-player

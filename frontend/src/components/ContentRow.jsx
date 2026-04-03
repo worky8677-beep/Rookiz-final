@@ -29,8 +29,10 @@ export function ContentRow({
   className,
   children,
 }) {
+  const GRID_MAX = 4;
+
   function renderGrid() {
-    const list = (filter ? items.filter(filter) : items).slice(0, 4);
+    const list = (filter ? items.filter(filter) : items).slice(0, GRID_MAX);
 
     function getBadge(item) {
       if (badge === 'rating') return <RatingBadge score={item.vote_average?.toFixed(1)} />;

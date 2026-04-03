@@ -8,6 +8,21 @@ import {
   faCirclePlus, faUserCheck, faCircleExclamation, faShieldHeart,
 } from '@fortawesome/free-solid-svg-icons';
 
+const LIMIT_MIN = 15;
+const LIMIT_MAX = 180;
+const LIMIT_STEP = 15;
+const CHART_MAX_HEIGHT = 140;
+
+function StatItem({ icon, value, label, color = "text-gray-700" }) {
+  return (
+    <div className="flex flex-col items-center gap-1 w-[140px]">
+      <FontAwesomeIcon icon={icon} className={`${color} text-xl`} />
+      <span className={`text-2xl font-extrabold ${color}`}>{value}</span>
+      <span className="text-sm text-gray-500">{label}</span>
+    </div>
+  );
+}
+
 /* ── AlertRow: variant="blue" | "secondary" ── */
 const ALERT_STYLE = {
   blue:      { wrap: "bg-blue-100 border-blue-500",           icon: "text-blue-900",      text: "text-blue-900" },
@@ -15,11 +30,11 @@ const ALERT_STYLE = {
 };
 
 function AlertRow({ variant, icon, children }) {
-  const s = ALERT_STYLE[variant];
+  const cls = ALERT_STYLE[variant];
   return (
-    <div className={`${s.wrap} border rounded-3xl h-[62px] flex items-center px-[12px] gap-[10px]`}>
-      <FontAwesomeIcon icon={icon} className={`${s.icon} text-[20px] shrink-0`} />
-      <p className={`text-sm font-semibold leading-5 ${s.text}`}>{children}</p>
+    <div className={`${cls.wrap} border rounded-3xl h-[62px] flex items-center px-3 gap-2.5`}>
+      <FontAwesomeIcon icon={icon} className={`${cls.icon} text-xl shrink-0`} />
+      <p className={`text-sm font-semibold leading-5 ${cls.text}`}>{children}</p>
     </div>
   );
 }
@@ -80,7 +95,7 @@ export default function MyPage() {
   }
 
   const maxMin = Math.max(...watchData.map(d => d.min));
-  const limitPct = ((limit - 15) / (180 - 15)) * 100;
+  const limitPct = ((limit - LIMIT_MIN) / (LIMIT_MAX - LIMIT_MIN)) * 100;
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
@@ -107,7 +122,7 @@ export default function MyPage() {
             <div className="flex flex-wrap gap-3 lg:gap-9 items-center">
               {profileStats.map((s, idx) => (
                 <div key={idx} className="bg-gray-50 rounded-3xl px-4 py-3 flex gap-2 items-center flex-1 min-w-[140px] lg:w-[180px] lg:flex-none h-[72px] overflow-hidden">
-                  <FontAwesomeIcon icon={s.icon} className={`text-3xl lg:text-[38px] shrink-0 ${s.iconCls}`} />
+                  <FontAwesomeIcon icon={s.icon} className={`text-3xl lg:text-4xl shrink-0 ${s.iconCls}`} />
                   <div className="flex flex-col min-w-0">
                     <span className="text-xs lg:text-sm font-bold text-gray-700 truncate">{s.label}</span>
                     <span className="text-base lg:text-xl font-bold text-gray-700 truncate">{s.value}</span>
@@ -125,12 +140,12 @@ export default function MyPage() {
         {/* ── 칭찬 하루 섹션 ── */}
         <section className="flex flex-col gap-5 md:gap-7">
           <h2 className="text-3xl md:text-4xl font-extrabold text-gray-800">칭찬 하루</h2>
-          <div className="flex flex-wrap gap-x-[50px] gap-y-3">
+          <div className="flex flex-wrap gap-x-12.5 gap-y-3">
             {stickers.map((active, i) => (
               <button
                 key={i}
                 onClick={() => toggleSticker(i)}
-                className={`h-[100px] w-[200px] rounded-full flex items-center justify-center cursor-pointer transition-all duration-300
+                className={`h-25 w-sticker rounded-full flex items-center justify-center cursor-pointer transition-all duration-300
                   ${active
                     ? 'bg-primary-100 border-[3px] border-primary-300'
                     : 'bg-white border-[3px] border-gray-300'
@@ -138,7 +153,7 @@ export default function MyPage() {
               >
                 <FontAwesomeIcon
                   icon={faAward}
-                  className={`text-[40px] transition-colors duration-300 ${active ? 'text-primary-500' : 'text-gray-300'}`}
+                  className={`text-4_5xl transition-colors duration-300 ${active ? 'text-primary-500' : 'text-gray-300'}`}
                 />
               </button>
             ))}
@@ -153,7 +168,7 @@ export default function MyPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-7">
 
             {/* ── 좌측 ── */}
-            <div className="flex flex-col gap-[6px]">
+            <div className="flex flex-col gap-1.5">
 
               {/* 이번 주 시청 시간 차트 */}
               <div className="bg-white rounded-3xl px-6 py-10 shadow-sm flex flex-col gap-6">
@@ -165,37 +180,24 @@ export default function MyPage() {
                     <div key={i} className="flex-1 flex flex-col items-center gap-1">
                       <div
                         className="w-full rounded-t-lg bg-primary-400 transition-all duration-500"
-                        style={{ height: `${(d.min / maxMin) * 140}px` }}
+                        style={{ height: `${(d.min / maxMin) * CHART_MAX_HEIGHT}px` }}
                       />
                       <span className="text-sm font-bold text-gray-400">{d.day}</span>
                     </div>
                   ))}
                 </div>
 
-                {/* 요약 통계 3개 */}
                 <div className="flex justify-around">
-                  <div className="flex flex-col items-center gap-1 w-[140px]">
-                    <FontAwesomeIcon icon={faArrowTrendUp} className="text-gray-500 text-xl" />
-                    <span className="text-2xl font-extrabold text-gray-700">370</span>
-                    <span className="text-sm text-gray-500">안전 콘텐츠</span>
-                  </div>
-                  <div className="flex flex-col items-center gap-1 w-[140px]">
-                    <FontAwesomeIcon icon={faClock} className="text-gray-500 text-xl" />
-                    <span className="text-2xl font-extrabold text-gray-700">35</span>
-                    <span className="text-sm text-gray-500">일 평균(분)</span>
-                  </div>
-                  <div className="flex flex-col items-center gap-1 w-[140px]">
-                    <FontAwesomeIcon icon={faUserShield} className="text-green-600 text-xl" />
-                    <span className="text-2xl font-extrabold text-green-600">100%</span>
-                    <span className="text-sm text-gray-500">안전 콘텐츠</span>
-                  </div>
+                  <StatItem icon={faArrowTrendUp} value="370" label="안전 콘텐츠" />
+                  <StatItem icon={faClock} value="35" label="일 평균(분)" />
+                  <StatItem icon={faUserShield} value="100%" label="안전 콘텐츠" color="text-green-600" />
                 </div>
               </div>
 
               {/* 알림 2개 + AI 안전점수 */}
-              <div className="flex gap-[6px] items-stretch">
+              <div className="flex gap-1.5 items-stretch">
                 {/* 알림 2개 */}
-                <div className="flex flex-col gap-[12px] flex-1">
+                <div className="flex flex-col gap-3 flex-1">
                   <AlertRow variant="blue" icon={faUserCheck}>
                     이번 주 시청한 모든 콘텐츠가 연령 기준에 적합해요
                   </AlertRow>
@@ -205,14 +207,14 @@ export default function MyPage() {
                 </div>
 
                 {/* AI 안전점수 */}
-                <div className="bg-green-100 border border-green-600 rounded-3xl px-[14px] py-6 flex flex-col justify-center shadow-sm w-[224px] shrink-0">
+                <div className="bg-green-100 border border-green-600 rounded-3xl px-3.5 py-6 flex flex-col justify-center shadow-sm w-[224px] shrink-0">
                   <div className="flex items-center gap-4">
-                    <div className="size-16 rounded-full bg-green-600 shadow-[0px_4px_4px_0px_var(--color-green-300)] flex items-center justify-center shrink-0">
+                    <div className="size-16 rounded-full bg-green-600 shadow-green-glow flex items-center justify-center shrink-0">
                       <span className="text-2xl font-extrabold text-white">98</span>
                     </div>
-                    <div className="flex flex-col gap-[10px]">
-                      <div className="flex items-center gap-[12px]">
-                        <FontAwesomeIcon icon={faShieldHeart} className="text-green-900 text-[20px]" />
+                    <div className="flex flex-col gap-2.5">
+                      <div className="flex items-center gap-3">
+                        <FontAwesomeIcon icon={faShieldHeart} className="text-green-900 text-xl" />
                         <span className="text-sm font-semibold text-green-900">AI 안전 점수</span>
                       </div>
                       <span className="text-lg font-extrabold text-gray-950">매우 안전해요!</span>
@@ -237,7 +239,7 @@ export default function MyPage() {
                     >
                       <FontAwesomeIcon
                         icon={faCircleCheck}
-                        className={`text-[20px] shrink-0 ${m.done ? 'text-gray-500' : 'text-secondary-500'}`}
+                        className={`text-xl shrink-0 ${m.done ? 'text-gray-500' : 'text-secondary-500'}`}
                       />
                       <span className={`text-xl leading-7 ${m.done ? 'text-gray-500' : 'line-through text-gray-800'}`}>
                         {m.text}
@@ -248,19 +250,19 @@ export default function MyPage() {
               </div>
 
               {/* 장르 차단 */}
-              <div className="bg-white rounded-3xl px-10 py-10 shadow-sm flex flex-col gap-[24px]">
+              <div className="bg-white rounded-3xl px-10 py-10 shadow-sm flex flex-col gap-6">
                 <div className="flex items-center justify-between">
                   <span className="text-xl font-bold text-gray-700 shrink-0">장르 차단</span>
                   <span className="text-sm text-gray-400">해당 장르 콘텐츠는 검색 및 추천에서 제외돼요</span>
                 </div>
-                <div className="flex flex-wrap gap-[12px]">
+                <div className="flex flex-wrap gap-3">
                   {ALL_GENRES.map(g => {
                     const isBlocked = blocked.includes(g);
                     return (
                       <button
                         key={g}
                         onClick={() => toggleGenre(g)}
-                        className={`flex items-center gap-1 px-4 py-[10px] rounded-full text-sm font-bold border transition-all duration-200
+                        className={`flex items-center gap-1 px-4 py-2.5 rounded-full text-sm font-bold border transition-all duration-200
                           ${isBlocked
                             ? 'bg-secondary-100 border-secondary-500 text-secondary-500'
                             : 'bg-gray-50 border-gray-100 text-gray-500'
@@ -280,28 +282,28 @@ export default function MyPage() {
           </div>
 
           {/* ── 일일 시청 제한 ── */}
-          <div className="bg-white rounded-3xl px-5 py-5 shadow-sm flex flex-col gap-[14px]">
+          <div className="bg-white rounded-3xl px-5 py-5 shadow-sm flex flex-col gap-3.5">
             <div className="flex items-center justify-between">
-              <div className="flex flex-col gap-[6px]">
+              <div className="flex flex-col gap-1.5">
                 <span className="text-xl font-bold text-gray-700">일일 시청 제한</span>
                 <span className="text-sm text-gray-400">하루 최대 시청 시간을 설정해요</span>
               </div>
-              <div className="flex items-center gap-[2px]">
-                <button onClick={() => setLimit(v => Math.max(15, v - 15))}>
+              <div className="flex items-center gap-0.5">
+                <button onClick={() => setLimit(v => Math.max(LIMIT_MIN, v - LIMIT_STEP))}>
                   <FontAwesomeIcon icon={faCircleMinus} className="text-xl text-gray-300" />
                 </button>
-                <div className="w-[64px] text-center">
+                <div className="w-16 text-center">
                   <span className="text-2xl font-extrabold text-primary-500">{limit}</span>
                   <span className="text-xs font-semibold text-gray-300">분</span>
                 </div>
-                <button onClick={() => setLimit(v => Math.min(180, v + 15))}>
+                <button onClick={() => setLimit(v => Math.min(LIMIT_MAX, v + LIMIT_STEP))}>
                   <FontAwesomeIcon icon={faCirclePlus} className="text-xl text-primary-500" />
                 </button>
               </div>
             </div>
 
             {/* 진행 바 */}
-            <div className="flex flex-col gap-[6px]">
+            <div className="flex flex-col gap-1.5">
               <div className="relative h-[7px] bg-gray-100 rounded-full overflow-hidden">
                 <div
                   className="absolute left-0 top-0 h-full rounded-full bg-linear-[90deg] from-primary-200 to-primary-500 transition-all duration-300"
@@ -309,8 +311,8 @@ export default function MyPage() {
                 />
               </div>
               <div className="flex justify-between">
-                <span className="text-sm text-gray-300">15분</span>
-                <span className="text-sm text-gray-300">3시간</span>
+                <span className="text-sm text-gray-300">{LIMIT_MIN}분</span>
+                <span className="text-sm text-gray-300">{Math.floor(LIMIT_MAX / 60)}시간</span>
               </div>
             </div>
           </div>
@@ -318,7 +320,7 @@ export default function MyPage() {
           {/* 케어루 수정하기 버튼 */}
           <div className="flex justify-end">
             <button className="flex items-center justify-center gap-1 bg-white border border-primary-500 rounded-[48px] h-[44px] w-[153px] text-sm font-bold text-primary-800 hover:bg-primary-500 hover:text-white transition-colors duration-200">
-              <FontAwesomeIcon icon={faPencil} className="text-[16px]" />
+              <FontAwesomeIcon icon={faPencil} className="text-base" />
               케어루 수정하기
             </button>
           </div>

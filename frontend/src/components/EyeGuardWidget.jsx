@@ -2,14 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { twMerge } from "tailwind-merge";
 import { useEyeGuard, WARN_RATIO } from "../hooks/useEyeGuard";
-
-const STATUS = {
-  noface:  { icon: "?",  label: "얼굴 없음",  color: "var(--color-status-inactive)" },
-  ok:      { icon: "✓",  label: "안전",       color: "var(--color-status-ok)" },
-  caution: { icon: "!",  label: "주의",       color: "var(--color-status-caution)" },
-  danger:  { icon: "⚠",  label: "너무 가까움", color: "var(--color-status-danger)" },
-  loading: { icon: "⏳", label: "로딩 중",    color: "var(--color-status-loading)" },
-};
+import { EYE_STATUS, STATUS_TEXT, GAUGE_BG } from "../constants/eyeGuard";
 
 function Widget() {
   const dragRef = useRef({ dragging: false, ox: 0, oy: 0 });
@@ -38,7 +31,7 @@ function Widget() {
     e.preventDefault();
   };
 
-  const s = STATUS[status];
+  const statusInfo = EYE_STATUS[status];
   const pct = Math.min((ratio / WARN_RATIO) * 100, 100);
   const isDanger = status === "danger";
 
@@ -47,7 +40,6 @@ function Widget() {
       className={twMerge("fixed z-[999999] select-none transition-[filter] duration-300", isDanger && "drop-shadow-[0_0_12px_color-mix(in_srgb,var(--color-status-danger)_53%,transparent)]")}
       style={{ right: `${pos.x}px`, top: `${pos.y}px` }}
     >
-      {/* ── 패널 ── */}
       {open && (
         <div className={twMerge(
           "w-50 bg-white rounded-xl overflow-hidden mb-2 transition-colors",
@@ -58,9 +50,9 @@ function Widget() {
             onMouseDown={onMouseDown}
             className="px-3 py-2 bg-gray-50 cursor-grab flex items-center justify-between border-b border-gray-200"
           >
-            <span className="text-[11px] text-gray-500 tracking-[2px]">EYE GUARD</span>
-            <span className="text-[11px] font-bold" style={{ color: s.color }}>
-              {s.icon} {s.label}
+            <span className="text-xs text-gray-500 tracking-[2px]">EYE GUARD</span>
+            <span className={twMerge("text-xs font-bold", STATUS_TEXT[status])}>
+              {statusInfo.icon} {statusInfo.label}
             </span>
           </div>
 
@@ -72,14 +64,11 @@ function Widget() {
             />
             {!running && (
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-[28px]">📷</span>
+                <span className="text-3xl">📷</span>
               </div>
             )}
             {isDanger && (
-              <div
-                className="absolute inset-0 pointer-events-none animate-[blink_0.6s_ease-in-out_infinite_alternate]"
-                style={{ background: "color-mix(in srgb, var(--color-status-danger) 13%, transparent)" }}
-              />
+              <div className="absolute inset-0 pointer-events-none animate-[blink_0.6s_ease-in-out_infinite_alternate] bg-status-danger/13" />
             )}
           </div>
 
@@ -87,19 +76,19 @@ function Widget() {
           <div className="px-3 py-2">
             <div className="h-1 bg-gray-200 rounded overflow-hidden">
               <div
-                className="h-full rounded transition-[width,background] duration-150"
-                style={{ width: `${pct}%`, background: s.color }}
+                className={twMerge("h-full rounded transition-[width,background] duration-150", GAUGE_BG[status])}
+                style={{ width: `${pct}%` }}
               />
             </div>
             <div className="mt-1.5 flex justify-between items-center">
-              <span className="text-[10px] text-gray-400">
+              <span className="text-xs text-gray-400">
                 {running ? `비율 ${Math.round(ratio * 100)}%` : "카메라 꺼짐"}
               </span>
               <button
                 onClick={running ? stop : start}
                 disabled={status === "loading"}
                 className={twMerge(
-                  "text-[10px] px-2.5 py-0.5 rounded font-semibold border-0",
+                  "text-xs px-2.5 py-0.5 rounded font-semibold border-0",
                   status === "loading" && "bg-gray-300 text-gray-400 cursor-not-allowed",
                   status !== "loading" && running && "bg-gray-200 text-gray-500 cursor-pointer",
                   status !== "loading" && !running && "bg-blue-600 text-white cursor-pointer"
@@ -112,7 +101,7 @@ function Widget() {
         </div>
       )}
 
-      {/* ── 토글 버튼 ── */}
+      {/* 토글 버튼 */}
       <div className="flex justify-end">
         <button
           onClick={() => setOpen(o => !o)}
@@ -124,8 +113,6 @@ function Widget() {
           {open ? "✕" : "👁"}
         </button>
       </div>
-
-      <style>{`@keyframes blink { from { opacity:0 } to { opacity:1 } }`}</style>
     </div>
   );
 }

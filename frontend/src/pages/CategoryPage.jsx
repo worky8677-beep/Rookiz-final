@@ -42,14 +42,16 @@ export default function CategoryPage() {
   useEffect(() => {
     const fetchFn = mode === "junior" ? fetchJuniorMoviesByPage : fetchKidsMoviesByPage;
     setLoading(true);
-    fetchFn(1).then((data) => {
-      setMovies(data);
-      setPage(1);
-      setVisibleRows(INITIAL_ROWS);
-      setHasMore(data.length >= 20);
-      setLoading(false);
-      animatedRef.current.clear();
-    });
+    fetchFn(1)
+      .then((data) => {
+        setMovies(data);
+        setPage(1);
+        setVisibleRows(INITIAL_ROWS);
+        setHasMore(data.length >= 20);
+        animatedRef.current.clear();
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false));
   }, [mode]);
 
   // ── 추가 데이터 로드 (ref 기반 디바운스) ──
@@ -66,17 +68,22 @@ export default function CategoryPage() {
       }
 
       setLoading(true);
-      const fetchFn = md === "junior" ? fetchJuniorMoviesByPage : fetchKidsMoviesByPage;
-      const nextPage = pg + 1;
-      const newData = await fetchFn(nextPage);
-      if (newData.length === 0) {
-        setHasMore(false);
-      } else {
-        setMovies((prev) => [...prev, ...newData]);
-        setPage(nextPage);
-        setVisibleRows((r) => r + 1);
+      try {
+        const fetchFn = md === "junior" ? fetchJuniorMoviesByPage : fetchKidsMoviesByPage;
+        const nextPage = pg + 1;
+        const newData = await fetchFn(nextPage);
+        if (newData.length === 0) {
+          setHasMore(false);
+        } else {
+          setMovies((prev) => [...prev, ...newData]);
+          setPage(nextPage);
+          setVisibleRows((r) => r + 1);
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }, DEBOUNCE_MS);
   };
 
@@ -149,7 +156,7 @@ export default function CategoryPage() {
     <div className="min-h-screen bg-gray-50 flex flex-col items-center">
       <Nav activeTab="main" />
 
-      <div className="w-full max-w-[1280px] flex flex-col gap-9 p-10">
+      <div className="w-full max-w-container flex flex-col gap-9 p-10">
         {/* 타이틀 */}
         <div className="flex items-center justify-between">
           <h1 className="text-4xl font-extrabold text-gray-700 leading-8">

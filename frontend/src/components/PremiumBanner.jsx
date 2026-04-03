@@ -1,7 +1,7 @@
 export function PremiumBanner() {
   return (
     <div className="mx-4 md:mx-10 min-h-[120px] md:h-[160px] bg-blue-900 rounded-2xl md:rounded-4xl flex flex-col md:flex-row items-start md:items-center justify-between p-6 md:px-8 relative overflow-hidden shadow-lg gap-4">
-      <div className="absolute -right-10 -bottom-10 size-32 md:size-48 bg-primary-500/20 blur-[24px] md:blur-[32px] rounded-full" />
+      <div className="absolute -right-10 -bottom-10 size-32 md:size-48 bg-primary-500/20 blur-xl md:blur-[32px] rounded-full" />
       <div className="flex flex-col gap-2 md:gap-5 relative z-10 text-gray-50">
         <h2 className="text-xl md:text-4xl font-black">
           프리미엄으로 구독하세요!

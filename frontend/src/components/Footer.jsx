@@ -2,6 +2,9 @@ import { twMerge } from 'tailwind-merge';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShield, faMedal, faGlobe, faHeadset } from '@fortawesome/free-solid-svg-icons';
 
+const LINKS = ["이용약관", "개인정보처리방침", "자녀 보호 설정", "고객센터"];
+const SOCIAL_ICONS = [faGlobe, faHeadset];
+
 export function Footer({ className }) {
   return (
     <footer className={twMerge("w-full bg-gray-50", className)}>
@@ -18,11 +21,11 @@ export function Footer({ className }) {
         <div className="flex flex-col gap-4">
           <div className="flex gap-3">
             <div className="bg-blue-100 border border-blue-600 px-3 py-1.5 rounded-full text-blue-600 text-sm font-bold flex items-center gap-2">
-              <FontAwesomeIcon icon={faShield} className="text-[16px]" />
+              <FontAwesomeIcon icon={faShield} className="text-base" />
               안전 인증
             </div>
             <div className="bg-secondary-100 border border-secondary-500 px-3 py-1.5 rounded-full text-secondary-500 text-sm font-bold flex items-center gap-2">
-              <FontAwesomeIcon icon={faMedal} className="text-[16px]" />
+              <FontAwesomeIcon icon={faMedal} className="text-base" />
               우수 콘텐츠
             </div>
           </div>
@@ -34,28 +37,20 @@ export function Footer({ className }) {
 
         {/* 링크 */}
         <div className="flex flex-wrap gap-x-8 gap-y-2 md:gap-12">
-          <a href="#" className="text-sm text-gray-400 font-medium hover:text-gray-600">
-            이용약관
-          </a>
-          <a href="#" className="text-sm text-gray-400 font-medium hover:text-gray-600">
-            개인정보처리방침
-          </a>
-          <a href="#" className="text-sm text-gray-400 font-medium hover:text-gray-600">
-            자녀 보호 설정
-          </a>
-          <a href="#" className="text-sm text-gray-400 font-medium hover:text-gray-600">
-            고객센터
-          </a>
+          {LINKS.map((label) => (
+            <a key={label} href="#" className="text-sm text-gray-400 font-medium hover:text-gray-600">
+              {label}
+            </a>
+          ))}
         </div>
 
         {/* 소셜 아이콘 */}
         <div className="flex gap-4 shrink-0">
-          <button className="size-[38px] bg-white rounded-full flex items-center justify-center text-gray-400 shadow-sm hover:text-gray-600 transition-colors">
-            <FontAwesomeIcon icon={faGlobe} className="text-[18px]" />
-          </button>
-          <button className="size-[38px] bg-white rounded-full flex items-center justify-center text-gray-400 shadow-sm hover:text-gray-600 transition-colors">
-            <FontAwesomeIcon icon={faHeadset} className="text-[18px]" />
-          </button>
+          {SOCIAL_ICONS.map((icon, i) => (
+            <button key={i} className="size-[38px] bg-white rounded-full flex items-center justify-center text-gray-400 shadow-sm hover:text-gray-600 transition-colors">
+              <FontAwesomeIcon icon={icon} className="text-lg" />
+            </button>
+          ))}
         </div>
       </div>
     </footer>

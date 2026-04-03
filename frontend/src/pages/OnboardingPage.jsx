@@ -13,7 +13,7 @@ function StepIntro({ form, onChange, onNext }) {
   const isValid = form.name.trim() && form.email.trim() && form.password.trim();
 
   return (
-    <div className="flex flex-col items-center w-full max-w-[384px] px-4 gap-5 pb-25">
+    <div className="flex flex-col items-center w-full max-w-onboard-sm px-4 gap-5 pb-25">
       <LoginCharacter />
 
       <LoginInput
@@ -72,7 +72,7 @@ function AgeCard({ card, selected, onSelect }) {
     <button
       onClick={() => onSelect(card.id)}
       className={twMerge(
-        "bg-white border-2 rounded-3xl shadow-card p-6 pb-2 w-[248px] flex flex-col items-start gap-4 cursor-pointer transition-colors",
+        "bg-white border-2 rounded-3xl shadow-card p-6 pb-2 w-age-card flex flex-col items-start gap-4 cursor-pointer transition-colors",
         selected ? "border-primary-500" : "border-gray-100 hover:border-gray-300"
       )}
     >
@@ -132,7 +132,7 @@ function BackBtn({ onClick }) {
 
 function StepAgeSelect({ selected, onSelect, onNext, onBack }) {
   return (
-    <div className="flex flex-col items-center w-full max-w-[512px] px-4 gap-6 pb-25">
+    <div className="flex flex-col items-center w-full max-w-onboard-md px-4 gap-6 pb-25">
       <BackBtn onClick={onBack} />
       {/* 제목 */}
       <div className="text-center">
@@ -168,7 +168,7 @@ function StepGreeting({ ageGroup, onNext, onBack }) {
   const title = ageGroup === "kids" ? "안녕 나는 아기 루야" : "안녕 나는 꼬마 루야";
 
   return (
-    <div className="flex flex-col items-center w-full max-w-[512px] px-4 gap-6 pb-25">
+    <div className="flex flex-col items-center w-full max-w-onboard-md px-4 gap-6 pb-25">
       <BackBtn onClick={onBack} />
       <LoginCharacter
         title={`"${title}"`}
