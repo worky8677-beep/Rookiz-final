@@ -34,7 +34,7 @@ export function StepIndicator({ current = 1, className }) {
                       : "bg-gray-100 text-gray-500/50"
                 )}
               >
-                {isDone ? <FontAwesomeIcon icon={faCheck} className="text-[10px]" /> : step}
+                {isDone ? <FontAwesomeIcon icon={faCheck} className="text-xs" /> : step}
               </div>
               <span
                 className={twMerge(

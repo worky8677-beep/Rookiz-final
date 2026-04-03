@@ -21,12 +21,12 @@ function NavButton({ icon, label, active = false, onClick }) {
       <FontAwesomeIcon
         icon={icon}
         className={twMerge(
-          'text-[22px] md:text-[26px]',
+          'text-2xl md:text-3xl',
           active ? 'text-primary-950' : 'text-gray-300'
         )}
       />
       <span className={twMerge(
-        'text-[10px] md:text-xs font-semibold leading-tight',
+        'text-xs md:text-xs font-semibold leading-tight',
         active ? 'text-primary-950' : 'text-gray-300'
       )}>
         {label}

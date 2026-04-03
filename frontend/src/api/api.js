@@ -11,13 +11,6 @@ const api = axios.create({
   },
 });
 
-export const chatApi = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
 // ── 이미지 URL ────────────────────────────────────────────────
 
 export const getImageUrl = (path, size = "w500") =>

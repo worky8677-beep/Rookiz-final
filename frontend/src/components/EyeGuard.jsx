@@ -19,8 +19,8 @@ export function EyeGuard() {
     <div className="min-h-screen bg-dark-900 flex flex-col items-center justify-center text-dark-50 p-6 gap-6 font-sans">
 
       <div className="text-center">
-        <div className="text-[13px] tracking-[4px] text-dark-500 mb-1.5 uppercase">Eye Guard</div>
-        <div className="text-[22px] font-bold text-dark-50">눈 거리 보호 앱</div>
+        <div className="text-sm tracking-[4px] text-dark-500 mb-1.5 uppercase">Eye Guard</div>
+        <div className="text-2xl font-bold text-dark-50">눈 거리 보호 앱</div>
       </div>
 
       <div className="relative w-[280px] h-[210px] rounded-2xl overflow-hidden bg-dark-600 border border-dark-900">
@@ -32,14 +32,14 @@ export function EyeGuard() {
         />
         {!running && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
-            <span className="text-[40px]">📷</span>
+            <span className="text-4xl">📷</span>
             <span className="text-xs text-dark-600">카메라 대기 중</span>
           </div>
         )}
         {running && (
           <div
             className={twMerge(
-              "absolute top-2.5 left-1/2 -translate-x-1/2 bg-black/70 rounded-full px-3.5 py-1 text-[11px] whitespace-nowrap backdrop-blur-sm border",
+              "absolute top-2.5 left-1/2 -translate-x-1/2 bg-black/70 rounded-full px-3.5 py-1 text-xs whitespace-nowrap backdrop-blur-sm border",
               STATUS_TEXT[status],
               STATUS_BORDER[status]
             )}
@@ -50,7 +50,7 @@ export function EyeGuard() {
       </div>
 
       <div className="w-[280px]">
-        <div className="flex justify-between text-[11px] text-dark-500 mb-1.5">
+        <div className="flex justify-between text-xs text-dark-500 mb-1.5">
           <span>멀다 (안전)</span>
           <span>가깝다 (위험)</span>
         </div>
@@ -60,7 +60,7 @@ export function EyeGuard() {
             style={{ width: `${pct * 100}%` }}
           />
         </div>
-        <div className="text-center mt-1.5 text-[11px] text-dark-500">
+        <div className="text-center mt-1.5 text-xs text-dark-500">
           {running ? `얼굴 비율 ${Math.round(ratio * 100)}% (임계 ${Math.round(WARN_RATIO * 100)}%)` : "—"}
         </div>
       </div>
@@ -71,12 +71,12 @@ export function EyeGuard() {
           running ? `${STATUS_BG_LIGHT[status]} ${STATUS_BORDER[status]}` : "bg-dark-600 border-dark-500"
         )}
       >
-        <div className={twMerge("transition-[font-size] duration-300", isDanger ? "text-[32px]" : "text-2xl")}>
+        <div className={twMerge("transition-[font-size] duration-300", isDanger ? "text-3xl" : "text-2xl")}>
           {msg.icon}
         </div>
         <div
           className={twMerge(
-            "text-[13px] text-center leading-relaxed whitespace-pre-line",
+            "text-sm text-center leading-relaxed whitespace-pre-line",
             isDanger ? "font-bold" : "font-normal",
             running ? STATUS_TEXT[status] : "text-dark-300"
           )}
@@ -100,7 +100,7 @@ export function EyeGuard() {
         {status === "loading" ? "로딩 중..." : running ? "중지" : "시작"}
       </button>
 
-      <div className="text-[11px] text-dark-600 text-center leading-7">
+      <div className="text-xs text-dark-600 text-center leading-7">
         적정 시청 거리: <span className="text-status-ok">30cm 이상</span><br />
         전면 카메라 필요
       </div>

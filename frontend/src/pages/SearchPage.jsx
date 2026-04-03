@@ -7,7 +7,13 @@ import { Searchbar } from '../components/Searchbar';
 import { ContentRow } from '../components/ContentRow';
 import { Card } from '../components/Card';
 
-const FORBIDDEN_GENRES = [18, 10749, 27, 80, 53, 9648];
+const GENRE_DRAMA = 18;
+const GENRE_ROMANCE = 10749;
+const GENRE_HORROR = 27;
+const GENRE_CRIME = 80;
+const GENRE_THRILLER = 53;
+const GENRE_MYSTERY = 9648;
+const FORBIDDEN_GENRES = [GENRE_DRAMA, GENRE_ROMANCE, GENRE_HORROR, GENRE_CRIME, GENRE_THRILLER, GENRE_MYSTERY];
 
 function filterByAge(movies, mode) {
   return movies.filter((movie) => {

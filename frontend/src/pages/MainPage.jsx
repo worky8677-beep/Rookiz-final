@@ -15,8 +15,11 @@ import {
   fetchTrending,
   fetchKidsMovies,
   fetchLatestKidsMovies,
-  getImageUrl,
+  fetchJuniorMovies,
+  fetchJuniorDrama,
+  fetchLatestJuniorMovies,
   fetchEnglishKidsContent,
+  getImageUrl,
 } from "../api/api";
 
 const CHARACTERS = [
@@ -27,19 +30,22 @@ const CHARACTERS = [
   { id: 5, name: "핑구",     poster_path: "/mc1gBxnqdXCvwQSfNYrBzes5trp.jpg" },
 ];
 
-export default function MainPage() {
+export default function MainPage({ mode = "kids" }) {
+  const isKids = mode === "kids";
   const [trending, setTrending] = useState([]);
-  const [kidsMovies, setKidsMovies] = useState([]);
+  const [movies, setMovies] = useState([]);
+  const [drama, setDrama] = useState([]);
   const [latestMovies, setLatestMovies] = useState([]);
   const [englishContent, setEnglishContent] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchTrending().then(setTrending).catch(console.error);
-    fetchKidsMovies().then(setKidsMovies).catch(console.error);
-    fetchLatestKidsMovies().then(setLatestMovies).catch(console.error);
+    (isKids ? fetchKidsMovies : fetchJuniorMovies)().then(setMovies).catch(console.error);
+    (isKids ? fetchLatestKidsMovies : fetchLatestJuniorMovies)().then(setLatestMovies).catch(console.error);
     fetchEnglishKidsContent().then(setEnglishContent).catch(console.error);
-  }, []);
+    if (!isKids) fetchJuniorDrama().then(setDrama).catch(console.error);
+  }, [isKids]);
 
   const openDetail = (item) => {
     const type = item.media_type === "tv" || item.first_air_date ? "tv" : "movie";
@@ -62,7 +68,7 @@ export default function MainPage() {
       />
 
       <main className="w-full max-w-container flex flex-col gap-6 md:gap-10">
-        <AgeTabGroup activeMode="kids" />
+        <AgeTabGroup activeMode={mode} />
 
         <div className="flex flex-col gap-8 md:gap-10 pb-20">
           <ContentRow
@@ -71,13 +77,13 @@ export default function MainPage() {
             layout="grid"
             badge="eng"
             filter={(item) => item.original_language === "en"}
-            onItemClick={openDetail}
+            onItemClick={isKids ? openDetail : (item) => navigate(`/movie/${item.id}?type=tv`)}
             className="px-4 md:px-10"
           />
 
           <ContentRow title="루의 추천" className="px-4 md:px-10">
             <div className="grid grid-cols-2 lg:grid-cols-4 lg:grid-rows-2 gap-4 md:gap-10">
-              {kidsMovies?.slice(0, 5).map((item, i) => (
+              {movies.slice(0, 5).map((item, i) => (
                 <div key={item.id} className={i === 0 ? "col-span-2 lg:row-span-2" : ""}>
                   <Card
                     size={i === 0 ? "lg" : "sm"}
@@ -95,22 +101,35 @@ export default function MainPage() {
             </div>
           </ContentRow>
 
-          <ContentRow title="인기 있는 캐릭터" showViewAll={false} className="px-4 md:px-10">
-            <div className="flex gap-4 md:gap-10 overflow-x-auto pb-4 scrollbar-hide">
-              {CHARACTERS.map((char) => (
-                <CharacterCard key={char.id} name={char.name} image={getImageUrl(char.poster_path)} />
-              ))}
-            </div>
-          </ContentRow>
+          {isKids && (
+            <ContentRow title="인기 있는 캐릭터" showViewAll={false} className="px-4 md:px-10">
+              <div className="flex gap-4 md:gap-10 overflow-x-auto pb-4 scrollbar-hide">
+                {CHARACTERS.map((char) => (
+                  <CharacterCard key={char.id} name={char.name} image={getImageUrl(char.poster_path)} />
+                ))}
+              </div>
+            </ContentRow>
+          )}
 
           <ContentRow
             title="인기 콘텐츠"
-            items={kidsMovies}
+            items={movies}
             layout="grid"
             badge="rating"
             onItemClick={(item) => openDetailById(item.id)}
             className="px-4 md:px-10"
           />
+
+          {!isKids && (
+            <ContentRow
+              title="주니어 드라마"
+              items={drama}
+              layout="grid"
+              badge="rating"
+              onItemClick={(item) => openDetailById(item.id)}
+              className="px-4 md:px-10"
+            />
+          )}
 
           <ContentRow
             title="최신 콘텐츠"

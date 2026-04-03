@@ -16,7 +16,7 @@ export function Header({ title, showViewAll = true, viewAllLink = '#' }) {
           className="flex items-center gap-1 text-sm md:text-lg font-bold text-gray-800 hover:opacity-70 transition-opacity font-poppins shrink-0"
         >
           <span>더보기</span>
-          <FontAwesomeIcon icon={faCaretRight} className="text-[8px] md:text-[10px]" />
+          <FontAwesomeIcon icon={faCaretRight} className="text-xxs md:text-xs" />
         </a>
       )}
     </div>

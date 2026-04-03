@@ -50,8 +50,8 @@ function Widget() {
             onMouseDown={onMouseDown}
             className="px-3 py-2 bg-gray-50 cursor-grab flex items-center justify-between border-b border-gray-200"
           >
-            <span className="text-[11px] text-gray-500 tracking-[2px]">EYE GUARD</span>
-            <span className={twMerge("text-[11px] font-bold", STATUS_TEXT[status])}>
+            <span className="text-xs text-gray-500 tracking-[2px]">EYE GUARD</span>
+            <span className={twMerge("text-xs font-bold", STATUS_TEXT[status])}>
               {statusInfo.icon} {statusInfo.label}
             </span>
           </div>
@@ -64,7 +64,7 @@ function Widget() {
             />
             {!running && (
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-[28px]">📷</span>
+                <span className="text-3xl">📷</span>
               </div>
             )}
             {isDanger && (
@@ -81,14 +81,14 @@ function Widget() {
               />
             </div>
             <div className="mt-1.5 flex justify-between items-center">
-              <span className="text-[10px] text-gray-400">
+              <span className="text-xs text-gray-400">
                 {running ? `비율 ${Math.round(ratio * 100)}%` : "카메라 꺼짐"}
               </span>
               <button
                 onClick={running ? stop : start}
                 disabled={status === "loading"}
                 className={twMerge(
-                  "text-[10px] px-2.5 py-0.5 rounded font-semibold border-0",
+                  "text-xs px-2.5 py-0.5 rounded font-semibold border-0",
                   status === "loading" && "bg-gray-300 text-gray-400 cursor-not-allowed",
                   status !== "loading" && running && "bg-gray-200 text-gray-500 cursor-pointer",
                   status !== "loading" && !running && "bg-blue-600 text-white cursor-pointer"

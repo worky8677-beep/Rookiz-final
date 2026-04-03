@@ -15,7 +15,7 @@ export function Searchbar({ placeholder = "제목, 장르, 캐릭터 검색...",
       <input 
         type="text" 
         placeholder={placeholder}
-        className="flex-1 text-base md:text-[21px] font-medium text-gray-700 outline-none placeholder:text-gray-300 bg-transparent"
+        className="flex-1 text-base md:text-xl font-medium text-gray-700 outline-none placeholder:text-gray-300 bg-transparent"
         onChange={(e) => onSearch?.(e.target.value)}
       />
       <button className="p-2 text-gray-700 hover:text-primary-500 transition-colors cursor-pointer">

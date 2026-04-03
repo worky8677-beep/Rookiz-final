@@ -25,7 +25,7 @@ export function Card({ variant = 'default', title, image, size = 'md', badge, cl
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
         />
         <div className="absolute inset-0 overlay-poster" />
-        <div className="absolute bottom-4 left-4 right-3 md:bottom-6 md:left-6 md:right-4 text-white text-sm md:text-[21px] font-black leading-snug line-clamp-2">
+        <div className="absolute bottom-4 left-4 right-3 md:bottom-6 md:left-6 md:right-4 text-white text-sm md:text-xl font-black leading-snug line-clamp-2">
           {title}
         </div>
         {badge}

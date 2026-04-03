@@ -77,7 +77,7 @@ export function Button({
           {icon && <FontAwesomeIcon icon={icon} className="text-lg" />}
         </button>
         {label && (
-          <span className="text-[10px] text-gray-300 font-semibold font-sans">{label}</span>
+          <span className="text-xs text-gray-300 font-semibold font-sans">{label}</span>
         )}
       </div>
     );

@@ -11,7 +11,7 @@ const SearchPage = lazy(() => import("./pages/SearchPage"));
 const MyPage = lazy(() => import("./pages/MyPage"));
 const DetailPage = lazy(() => import("./pages/DetailPage"));
 const CategoryPage = lazy(() => import("./pages/CategoryPage"));
-const AiRoo = lazy(() => import("./pages/AIROO"));
+const AiRoo = lazy(() => import("./pages/Airoo"));
 
 const router = createBrowserRouter([
   {

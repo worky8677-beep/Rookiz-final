@@ -2,7 +2,6 @@ import { useState, useRef } from "react";
 import ReactPlayer from "react-player";
 import { twMerge } from "tailwind-merge";
 
-// Figma 에셋 아이콘
 const ICONS = {
   play:       "https://www.figma.com/api/mcp/asset/7d614a2a-0c5c-4e83-bb65-eed4d14c82d8",
   pause:      "https://www.figma.com/api/mcp/asset/dce73023-00b7-4637-acce-2cf9f40fbc95",
