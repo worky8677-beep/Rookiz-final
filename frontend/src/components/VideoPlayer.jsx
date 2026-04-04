@@ -27,57 +27,57 @@ function TopBtn({ faIcon, onClick, className }) {
     <button
       onClick={onClick}
       className={twMerge(
-        "size-[38px] flex items-center justify-center rounded-full bg-gray-950/60 hover:bg-gray-950/40 transition-colors shrink-0",
+        "size-8 md:size-[38px] flex items-center justify-center rounded-full bg-gray-950/60 hover:bg-gray-950/40 transition-colors shrink-0",
         className
       )}
     >
-      <FontAwesomeIcon icon={faIcon} className="text-white text-sm" />
+      <FontAwesomeIcon icon={faIcon} className="text-white text-xs md:text-sm" />
     </button>
   );
 }
 
-// ── 하단 소형 버튼 (38px) ─────────────────────────────────────────
+// ── 하단 소형 버튼 ───────────────────────────────────────────────
 function SmBtn({ faIcon, onClick, className }) {
   return (
     <button
       onClick={onClick}
       className={twMerge(
-        "size-[38px] flex items-center justify-center rounded-full bg-white/12 hover:bg-white/20 transition-colors shrink-0",
+        "size-8 md:size-[38px] flex items-center justify-center rounded-full bg-white/12 hover:bg-white/20 transition-colors shrink-0",
         className
       )}
     >
-      <FontAwesomeIcon icon={faIcon} className="text-white text-sm" />
+      <FontAwesomeIcon icon={faIcon} className="text-white text-xs md:text-sm" />
     </button>
   );
 }
 
-// ── 볼륨 버튼 (33px, 흰 반투명 배경) ─────────────────────────────
+// ── 볼륨 버튼 ────────────────────────────────────────────────────
 function VolumeBtn({ muted, onClick }) {
   return (
     <button
       onClick={onClick}
-      className="size-[33px] flex items-center justify-center rounded-full bg-white/12 hover:bg-white/20 transition-colors shrink-0"
+      className="size-7 md:size-[33px] flex items-center justify-center rounded-full bg-white/12 hover:bg-white/20 transition-colors shrink-0"
     >
       <FontAwesomeIcon
         icon={muted ? faVolumeXmark : faVolumeHigh}
-        className="text-white text-[11px]"
+        className="text-white text-[10px] md:text-[11px]"
       />
     </button>
   );
 }
 
-// ── 재생 전 중앙 플레이 버튼 (87px 노란 원 + 글로우) ─────────────
+// ── 재생 전 중앙 플레이 버튼 ─────────────────────────────────────
 function BigPlayBtn({ onClick }) {
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div className="flex flex-col items-center gap-3 md:gap-4">
       <button
         onClick={onClick}
-        className="size-[87px] bg-primary-500 rounded-full flex items-center justify-center shadow-[0_0_70px_rgba(255,198,51,0.6)] hover:scale-105 transition-transform"
+        className="size-16 md:size-[87px] bg-primary-500 rounded-full flex items-center justify-center shadow-[0_0_70px_rgba(255,198,51,0.6)] hover:scale-105 transition-transform"
         aria-label="재생"
       >
-        <FontAwesomeIcon icon={faPlay} className="text-black text-[28px] translate-x-0.5" />
+        <FontAwesomeIcon icon={faPlay} className="text-black text-xl md:text-[28px] translate-x-0.5" />
       </button>
-      <p className="text-white text-sm font-semibold font-sans">▶ 재생 버튼을 눌러 시작하세요</p>
+      <p className="text-white text-xs md:text-sm font-semibold font-sans">▶ 재생 버튼을 눌러 시작하세요</p>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router";
+import { useParams, useNavigate, useSearchParams } from "react-router";
 import { twMerge } from "tailwind-merge";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -11,7 +11,7 @@ import {
   faChevronRight,
   faPlay,
 } from "@fortawesome/free-solid-svg-icons";
-import { fetchMovieDetail, fetchMovieVideos, fetchSimilarMovies, getImageUrl } from "../api/api";
+import { fetchContentDetail, fetchContentVideos, fetchSimilarContent, getImageUrl } from "../api/api";
 import { Nav } from "../components/Nav";
 import { Footer } from "../components/Footer";
 import { Card } from "../components/Card";
@@ -235,11 +235,13 @@ const MOCK_EPISODES = [
 // 4. 페이지 컴포넌트
 // ================================================================
 
-export default function DetailPage({ movieId: propMovieId, onClose }) {
+export default function DetailPage({ movieId: propMovieId, mediaType: propMediaType, onClose }) {
   const { movieId: paramId } = useParams();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { openMovie } = useMovieModal();
+  const { openMovie, mediaType: ctxMediaType } = useMovieModal();
   const movieId = propMovieId ?? paramId;
+  const mediaType = propMediaType ?? searchParams.get("type") ?? ctxMediaType ?? "movie";
 
   const [movie,   setMovie]   = useState(null);
   const [videos,  setVideos]  = useState([]);
@@ -255,9 +257,9 @@ export default function DetailPage({ movieId: propMovieId, onClose }) {
       setLoading(true);
       try {
         const [m, v, s] = await Promise.all([
-          fetchMovieDetail(movieId),
-          fetchMovieVideos(movieId),
-          fetchSimilarMovies(movieId),
+          fetchContentDetail(movieId, mediaType),
+          fetchContentVideos(movieId, mediaType),
+          fetchSimilarContent(movieId, mediaType),
         ]);
         setMovie(m);
         setVideos(v ?? []);
@@ -270,7 +272,7 @@ export default function DetailPage({ movieId: propMovieId, onClose }) {
       }
     };
     load();
-  }, [movieId]);
+  }, [movieId, mediaType]);
 
   const handleSimilarClick = (id) => {
     if (onClose) openMovie(id);
@@ -319,7 +321,7 @@ export default function DetailPage({ movieId: propMovieId, onClose }) {
       />
 
       {/* ② 콘텐츠 정보 */}
-      <section className="px-5 pt-5 pb-4 flex flex-col gap-4">
+      <section className="px-4 md:px-5 pt-4 md:pt-5 pb-3 md:pb-4 flex flex-col gap-3 md:gap-4">
 
         {/* 칩 + 액션 버튼 */}
         <div className="flex items-start justify-between gap-3">
@@ -329,7 +331,7 @@ export default function DetailPage({ movieId: propMovieId, onClose }) {
               <Chip variant="kids" />
               <Chip variant="new" />
             </div>
-            <h1 className="text-2xl font-extrabold text-gray-950 leading-tight">{title}</h1>
+            <h1 className="text-xl md:text-2xl font-extrabold text-gray-950 leading-tight">{title}</h1>
             <p className="text-sm text-gray-300 font-medium">· 24화 · 모험/판타지</p>
             <p className="text-sm text-gray-600 leading-snug font-medium">
               {movie.overview || "꼬마 탐험가 루나와 친구들이 신비로운 우주를 탐험하며 펼치는 신나는 모험! 별자리의 비밀을 풀고, 외계인 친구들과 우정을 나누며 성장하는 이야기를 담았어요."}
@@ -359,7 +361,7 @@ export default function DetailPage({ movieId: propMovieId, onClose }) {
       </section>
 
       {/* ③ 시즌 + 탭 + 에피소드 */}
-      <section className="px-5 flex flex-col gap-4 pb-6">
+      <section className="px-4 md:px-5 flex flex-col gap-3 md:gap-4 pb-4 md:pb-6">
 
         {/* SeasonBtn 컴포지션 */}
         <div className="flex items-center gap-3">
@@ -400,7 +402,7 @@ export default function DetailPage({ movieId: propMovieId, onClose }) {
 
       {/* ④ 추천 콘텐츠 */}
       {similar.length > 0 && (
-        <section className="px-5 pb-8 flex flex-col gap-4">
+        <section className="px-4 md:px-5 pb-6 md:pb-8 flex flex-col gap-3 md:gap-4">
           {/* SectionHeader 컴포지션 */}
           <SectionHeader title="이런 콘텐츠도 있어요" onViewAll={() => {}} />
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

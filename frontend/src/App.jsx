@@ -1,7 +1,7 @@
 import { useEffect, Suspense, lazy } from "react";
 import { Outlet, useLocation } from "react-router";
 import { createPortal } from "react-dom";
-import { EyeGuardWidget } from "./components/EyeGuardWidget";
+
 import { MissionProvider } from "./context/MissionContext";
 import { ProfileProvider } from "./context/ProfileContext";
 import { MovieModalProvider, useMovieModal } from "./context/MovieModalContext";
@@ -15,7 +15,7 @@ function ScrollToTop() {
 }
 
 function MovieModal() {
-  const { movieId, closeMovie } = useMovieModal();
+  const { movieId, mediaType, closeMovie } = useMovieModal();
   if (!movieId) return null;
 
   return createPortal(
@@ -35,7 +35,7 @@ function MovieModal() {
             <p className="text-base font-black text-primary-600 animate-pulse font-sans">로딩중...</p>
           </div>
         }>
-          <DetailPage movieId={movieId} onClose={closeMovie} />
+          <DetailPage movieId={movieId} mediaType={mediaType} onClose={closeMovie} />
         </Suspense>
       </div>
     </div>,
@@ -56,7 +56,6 @@ export default function App() {
           <div className="relative min-h-screen">
             <ScrollToTop />
             <Outlet />
-            <EyeGuardWidget />
             <MovieModal />
           </div>
         </MovieModalProvider>

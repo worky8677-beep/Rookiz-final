@@ -2,7 +2,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Nav } from "../components/Nav";
 import { Footer } from "../components/Footer";
 import { Card } from "../components/Card";
@@ -24,8 +23,6 @@ const CATEGORY_CONFIG = {
   drama: { title: "주니어 드라마", kids: fetchJuniorDramaByPage, junior: fetchJuniorDramaByPage },
   english: { title: "글로벌 루키즈! 영어로 배워요", kids: fetchEnglishKidsContentByPage, junior: fetchEnglishJuniorContentByPage },
 };
-
-gsap.registerPlugin(ScrollTrigger);
 
 const COLS = 4;
 const INITIAL_ROWS = 2;
@@ -125,61 +122,42 @@ export default function CategoryPage() {
     };
   }, []);
 
-  // ── GSAP ScrollTrigger 카드 등장 애니메이션 ──
+  // ── GSAP stagger 카드 등장 애니메이션 ──
   useEffect(() => {
     if (!gridRef.current) return;
 
-    const triggers = [];
     const cards = gridRef.current.querySelectorAll("[data-card]");
-    cards.forEach((card) => {
+    const newCards = Array.from(cards).filter((card) => {
       const idx = card.dataset.card;
-      if (animatedRef.current.has(idx)) return;
+      if (animatedRef.current.has(idx)) return false;
       animatedRef.current.add(idx);
-
-      const tween = gsap.fromTo(
-        card,
-        { opacity: 0, y: 60 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.5,
-          ease: "power2.out",
-          delay: 0.05,
-          scrollTrigger: {
-            trigger: card,
-            start: "top 100%",
-            toggleActions: "play none none none",
-          },
-        },
-      );
-      if (tween.scrollTrigger) triggers.push(tween.scrollTrigger);
+      return true;
     });
 
-    ScrollTrigger.refresh();
+    if (newCards.length === 0) return;
 
-    return () => {
-      triggers.forEach((t) => t.kill());
-    };
+    gsap.fromTo(
+      newCards,
+      { opacity: 0, y: 40 },
+      { opacity: 1, y: 0, duration: 0.4, ease: "power2.out", stagger: 0.06 },
+    );
   }, [movies, visibleRows]);
 
   useEffect(() => {
-    return () => {
-      clearTimeout(debounceRef.current);
-      ScrollTrigger.getAll().forEach((t) => t.kill());
-    };
+    return () => clearTimeout(debounceRef.current);
   }, []);
 
   const visibleMovies = movies.slice(0, visibleRows * COLS);
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center">
-      <Nav activeTab="main" />
+      <Nav activeTab="main" mode={mode} />
 
       <div className="w-full max-w-container flex flex-col gap-5 md:gap-9 px-4 py-6 md:px-6 md:py-8 lg:p-10">
         {/* 타이틀 */}
         <div className="flex items-center justify-between">
           <h1 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-gray-700 leading-8">
-            인기 콘텐츠
+            {config.title}
           </h1>
         </div>
 

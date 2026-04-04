@@ -23,7 +23,7 @@ function ChatHeader({ onClose }) {
 
 function ChatMessages({ messages, loading, bottomRef }) {
   return (
-    <div className="flex-1 overflow-y-auto p-3 flex flex-col gap-2 min-h-[200px] max-h-[340px] bg-primary-100">
+    <div className="flex-1 overflow-y-auto p-3 flex flex-col gap-2 min-h-[150px] md:min-h-[200px] max-h-[240px] md:max-h-[340px] bg-primary-100">
       {messages.map((message, i) => (
         <div key={i} className={`py-2 px-3 max-w-4/5 text-sm leading-snug whitespace-pre-wrap break-words ${message.role === "user" ? "self-end bg-primary-400 text-gray-900 rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl" : "self-start bg-white text-gray-800 rounded-tl-2xl rounded-tr-2xl rounded-br-2xl shadow-sm"}`}>
           {message.text}

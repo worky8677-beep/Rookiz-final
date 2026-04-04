@@ -225,7 +225,7 @@ export default function OnboardingPage() {
     >
       {/* 로고 */}
       <div className="py-6">
-        <img src="/LOGO.svg" alt="ROOKIZ" className="h-12" />
+        <img src="/LOGO.svg" alt="ROOKIZ" className="h-8 md:h-10 lg:h-12" />
       </div>
 
       {/* 스텝 인디케이터 */}

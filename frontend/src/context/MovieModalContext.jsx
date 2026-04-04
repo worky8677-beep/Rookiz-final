@@ -4,11 +4,13 @@ const Ctx = createContext(null);
 
 export function MovieModalProvider({ children }) {
   const [movieId, setMovieId] = useState(null);
+  const [mediaType, setMediaType] = useState("movie");
   return (
     <Ctx.Provider value={{
       movieId,
-      openMovie: (id) => setMovieId(String(id)),
-      closeMovie: () => setMovieId(null),
+      mediaType,
+      openMovie: (id, type = "movie") => { setMovieId(String(id)); setMediaType(type); },
+      closeMovie: () => { setMovieId(null); setMediaType("movie"); },
     }}>
       {children}
     </Ctx.Provider>
