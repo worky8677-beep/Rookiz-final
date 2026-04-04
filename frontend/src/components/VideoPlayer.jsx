@@ -19,7 +19,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 const AUTO_HIDE_DELAY  = 3000;
-const INTRO_END_SEC    = 90; // 인트로 종료 시점 (초) — 실제 데이터 연동 시 교체
+const INTRO_END_SEC    = 90;  // 인트로 종료 시점 (초)
+const OUTRO_START_SEC  = 30;  // 엔딩 구간 시작 (잔여 초)
 
 // ── 상단 버튼 (38px, 어두운 배경) ────────────────────────────────
 function TopBtn({ faIcon, onClick, className }) {
@@ -306,8 +307,8 @@ export function VideoPlayer({ youtubeKey, poster, title, subtitle, onBack, class
         ) : (
           /* 재생 중 / 일시정지: 건너뛰기 + 진행바 + 하단 컨트롤 */
           <div className="flex flex-col gap-2 px-5 pb-4 md:px-7 md:pb-5">
-            {/* 건너뛰기 — 인트로 구간(0 ~ INTRO_END_SEC)에서만 표시 */}
-            <div className="flex justify-start h-[27px]">
+            {/* 건너뛰기 / 다음화 */}
+            <div className="flex justify-between h-[27px]">
               {played * duration < INTRO_END_SEC && (
                 <button
                   onClick={(e) => {
@@ -318,6 +319,18 @@ export function VideoPlayer({ youtubeKey, poster, title, subtitle, onBack, class
                   className="h-[27px] px-3 rounded-xl bg-gray-950/60 hover:bg-gray-950/30 transition-colors"
                 >
                   <span className="text-white font-extrabold text-sm font-sans whitespace-nowrap">건너뛰기</span>
+                </button>
+              )}
+              <span className="flex-1" />
+              {duration > 0 && duration - played * duration < OUTRO_START_SEC && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    resetTimer();
+                  }}
+                  className="h-[27px] px-3 rounded-xl bg-gray-950/60 hover:bg-gray-950/30 transition-colors"
+                >
+                  <span className="text-white font-extrabold text-sm font-sans whitespace-nowrap">다음화 &gt;</span>
                 </button>
               )}
             </div>

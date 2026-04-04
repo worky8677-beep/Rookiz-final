@@ -71,13 +71,21 @@ function StatusBadge({ progress }) {
  * ActionBtn — 아이콘 박스(44px) + 라벨 세로 배치
  * 좋아요/공유/다운로드 모두 동일한 구조
  */
-function ActionBtn({ icon, label, onClick }) {
+function ActionBtn({ icon, label, onClick, active = false }) {
   return (
     <button onClick={onClick} className="flex flex-col items-center gap-1.5 group">
-      <span className="size-11 bg-gray-100 rounded-2xl flex items-center justify-center group-hover:bg-gray-200 transition-colors text-gray-500">
+      <span className={twMerge(
+        "size-11 rounded-2xl flex items-center justify-center transition-colors",
+        active
+          ? "bg-secondary-100 border-[1.5px] border-secondary-500 text-secondary-500"
+          : "bg-gray-100 group-hover:bg-gray-200 text-gray-500"
+      )}>
         <FontAwesomeIcon icon={icon} className="text-base" />
       </span>
-      <span className="text-[10px] text-gray-400 font-semibold">{label}</span>
+      <span className={twMerge(
+        "text-[10px] font-semibold",
+        active ? "text-secondary-300" : "text-gray-400"
+      )}>{label}</span>
     </button>
   );
 }
@@ -216,7 +224,52 @@ function SectionHeader({ title, onViewAll }) {
 }
 
 // ================================================================
-// 3. 데이터 상수
+// 3. 콘텐츠 정보 탭
+// ================================================================
+
+function InfoRow({ label, value }) {
+  if (!value) return null;
+  return (
+    <div className="flex items-start py-2.5 border-b border-gray-100 last:border-b-0">
+      <span className="w-28 shrink-0 text-sm font-semibold text-gray-400 leading-2">{label}</span>
+      <span className="text-sm font-bold text-gray-950 leading-2">{value}</span>
+    </div>
+  );
+}
+
+function ContentInfoTab({ movie, mediaType }) {
+  const isTV = mediaType === "tv";
+
+  const studio = movie.production_companies?.map((c) => c.name).join(", ") || "-";
+  const year = isTV
+    ? [movie.first_air_date?.slice(0, 4), movie.last_air_date?.slice(0, 4)].filter(Boolean).join(" - ")
+    : movie.release_date?.slice(0, 4) || "-";
+  const episodes = isTV
+    ? `${movie.number_of_episodes ?? "-"}화 (시즌 ${movie.number_of_seasons ?? "-"})`
+    : null;
+  const runtime = isTV
+    ? movie.episode_run_time?.length ? `약 ${movie.episode_run_time[0]}분` : "-"
+    : movie.runtime ? `${movie.runtime}분` : "-";
+  const langMap = { ko: "한국어", en: "영어", ja: "일본어", zh: "중국어" };
+  const lang = langMap[movie.original_language] ?? movie.original_language ?? "-";
+  const rating = movie.adult ? "청소년 관람 불가" : "전체 관람가 (4세+)";
+  const genres = movie.genres?.map((g) => g.name).join(" · ") || "-";
+
+  return (
+    <div className="flex flex-col py-2">
+      <InfoRow label="제작사" value={studio} />
+      <InfoRow label="방영 연도" value={year} />
+      {isTV && <InfoRow label="총 에피소드" value={episodes} />}
+      <InfoRow label="러닝타임" value={runtime} />
+      <InfoRow label="언어" value={lang} />
+      <InfoRow label="연령 등급" value={rating} />
+      <InfoRow label="장르" value={genres} />
+    </div>
+  );
+}
+
+// ================================================================
+// 4. 데이터 상수
 // ================================================================
 
 const DEFAULT_SEASON = 2;
@@ -250,6 +303,7 @@ export default function DetailPage({ movieId: propMovieId, mediaType: propMediaT
 
   const [activeTab,      setActiveTab]      = useState("episodes");
   const [selectedSeason, setSelectedSeason] = useState(DEFAULT_SEASON);
+  const [liked,          setLiked]          = useState(false);
 
   useEffect(() => {
     if (!movieId) return;
@@ -345,9 +399,9 @@ export default function DetailPage({ movieId: propMovieId, mediaType: propMediaT
 
           {/* ActionBtn 컴포지션 */}
           <div className="flex gap-3 shrink-0 pt-1">
-            <ActionBtn icon={faHeart}      label="좋아요" />
+            <ActionBtn icon={faHeart} label="좋아요" active={liked} onClick={() => setLiked((v) => !v)} />
             <ActionBtn icon={faShareNodes} label="공유" />
-            <ActionBtn icon={faDownload}   label="다운로드" />
+            <ActionBtn icon={faDownload} label="저장" />
           </div>
         </div>
 
@@ -397,11 +451,7 @@ export default function DetailPage({ movieId: propMovieId, mediaType: propMediaT
         )}
 
         {activeTab === "info" && (
-          <div className="py-6 flex flex-col gap-2 text-sm text-gray-600 font-medium min-h-50">
-            <p>여기에 콘텐츠의 상세 제작 정보나 관련 스토리가 들어갑니다.</p>
-            <p>감독: 루나 스튜디오</p>
-            <p>출연: 루, 키키, 아로</p>
-          </div>
+          <ContentInfoTab movie={movie} mediaType={mediaType} />
         )}
       </section>
 
