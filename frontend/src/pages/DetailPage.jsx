@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router";
+import { useParams, useNavigate, useSearchParams } from "react-router";
 import { twMerge } from "tailwind-merge";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -12,7 +12,7 @@ import {
   faPlay,
 
 } from "@fortawesome/free-solid-svg-icons";
-import { fetchMovieDetail, fetchMovieVideos, fetchSimilarMovies, getImageUrl } from "../api/api";
+import { fetchMovieDetail, fetchMovieVideos, fetchSimilarMovies, fetchTvDetail, fetchTvVideos, fetchSimilarTv, getImageUrl } from "../api/api";
 import { Nav } from "../components/Nav";
 import { Button } from "../components/Button";
 import { Footer } from "../components/Footer";
@@ -149,9 +149,9 @@ export default function DetailPage({ movieId: propMovieId, onClose }) {
       setLoading(true);
       try {
         const [m, v, s] = await Promise.all([
-          fetchMovieDetail(movieId),
-          fetchMovieVideos(movieId),
-          fetchSimilarMovies(movieId),
+          isTv ? fetchTvDetail(movieId, lang) : fetchMovieDetail(movieId),
+          isTv ? fetchTvVideos(movieId, lang) : fetchMovieVideos(movieId),
+          isTv ? fetchSimilarTv(movieId, lang) : fetchSimilarMovies(movieId),
         ]);
         setMovie(m);
         setVideos(v);

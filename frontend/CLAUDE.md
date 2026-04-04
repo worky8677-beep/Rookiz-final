@@ -1,13 +1,11 @@
 # CLAUDE.md
+Airoo.jsx 에  아래 디자인을 읽고 구현
+@https://www.figma.com/design/cywgP6UtUfAM95zoghX7f7/%ED%8E%98%EC%9D%B4%EC%A7%80%EC%88%98%EC%A0%95?node-id=453-2876&m=dev
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+1. 챗봇 메시지 입력창
+@https://www.figma.com/design/cywgP6UtUfAM95zoghX7f7/%ED%8E%98%EC%9D%B4%EC%A7%80%EC%88%98%EC%A0%95?node-id=453-3428&m=dev
 
-> **루트 `../CLAUDE.md`의 모든 규칙(한국어 응답, 코딩 규칙, export 규칙, Tailwind v4 등)을 반드시 따른다.**
+2. 메시지 전송버튼
+@https://www.figma.com/design/cywgP6UtUfAM95zoghX7f7/%ED%8E%98%EC%9D%B4%EC%A7%80%EC%88%98%EC%A0%95?node-id=453-3882&m=dev
 
-## 규칙
-1. css 하드코딩 금지 -> tailwind v4 유틸리티 클래스 사용
-2. 1에 없는 값은 @theme 에 변수로 등록해서 사용
-3. 중복 UI 요소 병합
-
-## 중복 UI 최소화
-1. 중복 속성값을 props 로 개선
+3. AiRooSticky.jsx 의 챗봇 연동 로직을 그대로 사용

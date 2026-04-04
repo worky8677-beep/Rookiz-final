@@ -19,7 +19,11 @@
       "Bash(git fetch:*)",
       "Bash(git merge:*)",
       "Bash(git stash:*)",
-      "Bash(git add:*)"
-    ]
+      "Bash(git add:*)",
+      "mcp__figma__get_design_context"
+    ],
+    "permissions": {
+      "defaultMode": "acceptEdits"
+    }
   }
 }
