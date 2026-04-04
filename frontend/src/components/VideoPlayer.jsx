@@ -263,7 +263,6 @@ export function VideoPlayer({ youtubeKey, poster, title, subtitle, onBack, class
             <BigPlayBtn onClick={() => {
               hasStarted.current = true;
               togglePlay();
-              requestFullscreen();
             }} />
           ) : (
             /* 재생 중 / 일시정지: Prev(66) + Play·Pause(87 yellow) + Next(66) */
