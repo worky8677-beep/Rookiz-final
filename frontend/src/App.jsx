@@ -1,5 +1,47 @@
-import { Outlet } from "react-router";
-import { EyeGuardWidget } from "./components/EyeGuardWidget";
+import { useEffect, Suspense, lazy } from "react";
+import { Outlet, useLocation } from "react-router";
+import { createPortal } from "react-dom";
+
+import { MissionProvider } from "./context/MissionContext";
+import { ProfileProvider } from "./context/ProfileContext";
+import { MovieModalProvider, useMovieModal } from "./context/MovieModalContext";
+
+const DetailPage = lazy(() => import("./pages/DetailPage"));
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  return null;
+}
+
+function MovieModal() {
+  const { movieId, mediaType, closeMovie } = useMovieModal();
+  if (!movieId) return null;
+
+  return createPortal(
+    <div
+      className="fixed inset-0 z-[100] bg-black/60 flex items-center justify-center p-4 md:p-8"
+      onClick={closeMovie}
+    >
+      <div
+        className="bg-white rounded-3xl w-full max-w-[640px] max-h-[90vh] overflow-y-auto shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <Suspense fallback={
+          <div className="flex items-center justify-center h-64 flex-col gap-4">
+            <div className="size-16 bg-primary-300 rounded-full flex items-center justify-center animate-bounce overflow-hidden border-4 border-white">
+              <img src="/Airoo-circle.png" className="w-full h-full object-cover" alt="루" />
+            </div>
+            <p className="text-base font-black text-primary-600 animate-pulse font-sans">로딩중...</p>
+          </div>
+        }>
+          <DetailPage movieId={movieId} mediaType={mediaType} onClose={closeMovie} />
+        </Suspense>
+      </div>
+    </div>,
+    document.body
+  );
+}
 
 /**
  * App — 전역 레이아웃 브릿지
@@ -8,9 +50,16 @@ import { EyeGuardWidget } from "./components/EyeGuardWidget";
  */
 export default function App() {
   return (
-    <div className="relative min-h-screen">
-      <Outlet />
-      <EyeGuardWidget />
-    </div>
+    <ProfileProvider>
+      <MissionProvider>
+        <MovieModalProvider>
+          <div className="relative min-h-screen">
+            <ScrollToTop />
+            <Outlet />
+            <MovieModal />
+          </div>
+        </MovieModalProvider>
+      </MissionProvider>
+    </ProfileProvider>
   );
 }

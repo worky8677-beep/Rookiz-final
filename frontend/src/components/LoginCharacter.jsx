@@ -9,11 +9,11 @@ export function LoginCharacter({
   className,
 }) {
   return (
-    <div className={twMerge("relative flex flex-col items-center w-[346px]", className)}>
+    <div className={twMerge("relative flex flex-col items-center w-full max-w-[346px]", className)}>
       <img
         src={imgRoo}
         alt="루 캐릭터"
-        className="w-[150px] h-auto object-contain relative z-10"
+        className="w-24 md:w-[150px] h-auto object-contain relative z-10"
       />
 
       <div className="w-full backdrop-blur-sm bg-white/38 rounded-3xl shadow-md px-6 py-3 -mt-6 text-center">

@@ -16,14 +16,14 @@ export function EyeGuard() {
   const isDanger = status === "danger";
 
   return (
-    <div className="min-h-screen bg-dark-900 flex flex-col items-center justify-center text-dark-50 p-6 gap-6 font-sans">
+    <div className="min-h-screen bg-dark-900 flex flex-col items-center justify-center text-dark-50 p-4 md:p-6 gap-4 md:gap-6 font-sans">
 
       <div className="text-center">
-        <div className="text-sm tracking-[4px] text-dark-500 mb-1.5 uppercase">Eye Guard</div>
-        <div className="text-2xl font-bold text-dark-50">눈 거리 보호 앱</div>
+        <div className="text-xs md:text-sm tracking-[4px] text-dark-500 mb-1.5 uppercase">Eye Guard</div>
+        <div className="text-xl md:text-2xl font-bold text-dark-50">눈 거리 보호 앱</div>
       </div>
 
-      <div className="relative w-eye-guard h-[210px] rounded-2xl overflow-hidden bg-dark-600 border border-dark-900">
+      <div className="relative w-full max-w-eye-guard h-[160px] md:h-[210px] rounded-2xl overflow-hidden bg-dark-600 border border-dark-900">
         <video
           ref={videoRef}
           muted
@@ -49,7 +49,7 @@ export function EyeGuard() {
         )}
       </div>
 
-      <div className="w-eye-guard">
+      <div className="w-full max-w-eye-guard">
         <div className="flex justify-between text-xs text-dark-500 mb-1.5">
           <span>멀다 (안전)</span>
           <span>가깝다 (위험)</span>
@@ -67,11 +67,11 @@ export function EyeGuard() {
 
       <div
         className={twMerge(
-          "w-eye-guard min-h-[72px] rounded-xl flex flex-col items-center justify-center gap-1 p-3 border transition-all duration-300",
+          "w-full max-w-eye-guard min-h-[60px] md:min-h-[72px] rounded-xl flex flex-col items-center justify-center gap-1 p-2.5 md:p-3 border transition-all duration-300",
           running ? `${STATUS_BG_LIGHT[status]} ${STATUS_BORDER[status]}` : "bg-dark-600 border-dark-500"
         )}
       >
-        <div className={twMerge("transition-[font-size] duration-300", isDanger ? "text-3xl" : "text-2xl")}>
+        <div className={twMerge("transition-[font-size] duration-300", isDanger ? "text-2xl md:text-3xl" : "text-xl md:text-2xl")}>
           {msg.icon}
         </div>
         <div

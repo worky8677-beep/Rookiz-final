@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { Input } from "./Input";
 
 const imgRoo = "/Airoo-circle.png";
 const imgBubble = "/Airoo-talkbubble.png";
@@ -22,7 +23,7 @@ function ChatHeader({ onClose }) {
 
 function ChatMessages({ messages, loading, bottomRef }) {
   return (
-    <div className="flex-1 overflow-y-auto p-3 flex flex-col gap-2 min-h-[200px] max-h-[340px] bg-primary-100">
+    <div className="flex-1 overflow-y-auto p-3 flex flex-col gap-2 min-h-[150px] md:min-h-[200px] max-h-[240px] md:max-h-[340px] bg-primary-100">
       {messages.map((message, i) => (
         <div key={i} className={`py-2 px-3 max-w-4/5 text-sm leading-snug whitespace-pre-wrap break-words ${message.role === "user" ? "self-end bg-primary-400 text-gray-900 rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl" : "self-start bg-white text-gray-800 rounded-tl-2xl rounded-tr-2xl rounded-br-2xl shadow-sm"}`}>
           {message.text}
@@ -37,8 +38,20 @@ function ChatMessages({ messages, loading, bottomRef }) {
 function ChatInput({ input, loading, onInputChange, onSend, onKeyDown }) {
   return (
     <div className="flex border-t border-gray-100 p-2 gap-2 bg-white">
-      <input value={input} onChange={onInputChange} onKeyDown={onKeyDown} placeholder="메시지를 입력하세요..." disabled={loading} className="flex-1 bg-gray-50 border border-gray-200 rounded-full py-2 px-4 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-primary-400 transition-colors" />
-      <button onClick={onSend} disabled={loading || !input.trim()} className="size-9 rounded-full bg-primary-400 text-gray-900 flex items-center justify-center hover:bg-primary-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+      <Input
+        variant="chat"
+        value={input}
+        onChange={onInputChange}
+        onKeyDown={onKeyDown}
+        placeholder="메시지를 입력하세요..."
+        disabled={loading}
+        className="flex-1"
+      />
+      <button
+        onClick={onSend}
+        disabled={loading || !input.trim()}
+        className="size-9 rounded-full bg-primary-400 text-gray-900 flex items-center justify-center hover:bg-primary-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      >
         <FontAwesomeIcon icon={faPaperPlane} className="text-sm" />
       </button>
     </div>

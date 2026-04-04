@@ -27,7 +27,7 @@ export function Button({
         onClick={onClick}
         disabled={!active}
         className={twMerge(
-          "w-full h-14 rounded-2xl text-base font-extrabold transition-colors cursor-pointer flex items-center justify-center gap-3",
+          "w-full h-12 md:h-14 rounded-2xl text-sm md:text-base font-extrabold transition-colors cursor-pointer flex items-center justify-center gap-3",
           active
             ? "bg-primary-500 text-gray-950 hover:bg-primary-400"
             : "bg-gray-200 text-gray-400 cursor-not-allowed",

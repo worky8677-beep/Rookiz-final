@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router";
+import { useLocation } from "react-router";
+import { useMovieModal } from "../context/MovieModalContext";
 import { Nav } from "../components/Nav";
 import { Footer } from "../components/Footer";
 import { AgeTabGroup } from "../components/AgeTabGroup";
@@ -21,7 +22,9 @@ const CHARACTERS = [
   { id: 5, name: "핑구", poster_path: "/mc1gBxnqdXCvwQSfNYrBzes5trp.jpg" },
 ];
 
-export default function MainPage({ mode = "kids" }) {
+export default function MainPage({ mode: modeProp = "kids" }) {
+  const { pathname } = useLocation();
+  const mode = pathname === "/junior" ? "junior" : modeProp;
   const isKids = mode === "kids";
   const [trending, setTrending] = useState([]);
   const [movies, setMovies] = useState([]);
@@ -29,7 +32,7 @@ export default function MainPage({ mode = "kids" }) {
   const [latestMovies, setLatestMovies] = useState([]);
   const [englishContent, setEnglishContent] = useState([]);
   const [error, setError] = useState(false);
-  const navigate = useNavigate();
+  const { openMovie } = useMovieModal();
 
   useEffect(() => {
     setError(false);
@@ -42,16 +45,12 @@ export default function MainPage({ mode = "kids" }) {
     if (!isKids) safe(fetchJuniorDrama(), setDrama);
   }, [isKids]);
 
-  const openDetail = (item) => {
-    const type = item.media_type === "tv" || item.first_air_date ? "tv" : "movie";
-    navigate(`/movie/${item.id}${type === "tv" ? "?type=tv" : ""}`);
-  };
-
-  const openDetailById = (id) => navigate(`/movie/${id}`);
+  const openDetail = (item) => openMovie(item.id, item.media_type || "movie");
+  const openDetailById = (id, type = "movie") => openMovie(id, type);
 
   return (
     <div className={`min-h-screen flex flex-col items-center ${isKids ? "bg-green-100/50" : "bg-blue-100/50"}`}>
-      <Nav activeTab="main" />
+      <Nav activeTab="main" mode={mode} />
 
       <HeroBanner image={getImageUrl(trending[0]?.backdrop_path || trending[0]?.poster_path, "original")} title="슈퍼 히어로 특공대!" desc="슈퍼히어로가 꿈인 승아는 친구들을 모아 특공대를 만든다!" subDesc="승아와 친구들의 좌충우돌 도전기" onPlay={() => trending[0] && openDetailById(trending[0].id)} onDetail={() => trending[0] && openDetailById(trending[0].id)} />
 
@@ -61,10 +60,19 @@ export default function MainPage({ mode = "kids" }) {
         {error && <div className="mx-4 md:mx-10 bg-secondary-100 border border-secondary-500 rounded-2xl px-6 py-4 text-secondary-500 font-bold text-sm text-center">콘텐츠를 불러오는 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.</div>}
 
         <div className="flex flex-col gap-8 md:gap-10 pb-20">
-          <ContentRow title="글로벌 루키즈! 영어로 배워요" items={englishContent} layout="grid" badge="eng" filter={(item) => item.original_language === "en"} onItemClick={(item) => navigate(`/movie/${item.id}?type=tv&lang=en-US`)} viewAllLink={`/category?category=english&mode=${mode}`} className="px-4 md:px-10" />
+          <ContentRow
+            title="글로벌 루키즈! 영어로 배워요"
+            items={englishContent}
+            layout="grid"
+            badge="eng"
+            filter={(item) => item.original_language === "en"}
+            onItemClick={(item) => openMovie(item.id, "tv")}
+            viewAllLink={`/category?category=english&mode=${mode}`}
+            className="px-4 md:px-10"
+          />
 
           <ContentRow title="루의 추천" viewAllLink={`/category?category=recommend&mode=${mode}`} className="px-4 md:px-10">
-            <div className="grid grid-cols-2 lg:grid-cols-4 lg:grid-rows-2 gap-4 md:gap-10">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 lg:grid-rows-2 gap-4 md:gap-6 lg:gap-10">
               {movies.slice(0, 5).map((item, i) => (
                 <div key={item.id} className={i === 0 ? "col-span-2 lg:row-span-2" : ""}>
                   <Card size={i === 0 ? "lg" : "sm"} title={item.title || item.name} image={getImageUrl(item.poster_path)} className={i === 0 ? "aspect-[16/9] lg:aspect-auto lg:h-full" : "aspect-square"} onClick={() => openDetailById(item.id)}>

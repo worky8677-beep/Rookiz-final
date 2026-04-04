@@ -147,30 +147,35 @@ export const fetchEnglishJuniorContent = () => fetchEnglishContent(ENGLISH_JUNIO
 export const fetchEnglishKidsContentByPage = (page = 1) => fetchEnglishContent({ ...ENGLISH_KIDS_PARAMS, page });
 export const fetchEnglishJuniorContentByPage = (page = 1) => fetchEnglishContent({ ...ENGLISH_JUNIOR_PARAMS, page });
 
-// ── 개별 영화 API ─────────────────────────────────────────────
+// ── 개별 콘텐츠 API (movie / tv 공용) ────────────────────────
 
-export const fetchMovieDetail = async (movieId) => {
+export const fetchContentDetail = async (id, mediaType = "movie") => {
   try {
-    const response = await api.get(`movie/${movieId}`);
+    const response = await api.get(`${mediaType}/${id}`);
     return response.data;
   } catch (error) {
-    console.error("영화 상세 로드 실패:", error);
+    console.error("콘텐츠 상세 로드 실패:", error);
     return null;
   }
 };
 
-export const fetchMovieVideos = async (movieId) => {
+export const fetchContentVideos = async (id, mediaType = "movie") => {
   try {
-    const response = await api.get(`movie/${movieId}/videos`);
+    const response = await api.get(`${mediaType}/${id}/videos`);
     return response.data.results;
   } catch (error) {
-    console.error("영화 비디오 로드 실패:", error);
+    console.error("콘텐츠 비디오 로드 실패:", error);
     return [];
   }
 };
 
-export const fetchSimilarMovies = (movieId) =>
-  fetchWithFallback(`movie/${movieId}/similar`);
+export const fetchSimilarContent = (id, mediaType = "movie") =>
+  fetchWithFallback(`${mediaType}/${id}/similar`);
+
+// 하위 호환
+export const fetchMovieDetail = (movieId) => fetchContentDetail(movieId, "movie");
+export const fetchMovieVideos = (movieId) => fetchContentVideos(movieId, "movie");
+export const fetchSimilarMovies = (movieId) => fetchSimilarContent(movieId, "movie");
 
 export const searchMovies = (query) =>
   fetchWithFallback("search/movie", { query, include_adult: false });

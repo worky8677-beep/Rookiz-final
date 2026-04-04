@@ -2,13 +2,13 @@ import { twMerge } from 'tailwind-merge';
 
 export function Heading({ as: Tag = 'h2', size = '3xl', className, children, ...props }) {
   const sizeMap = {
-    '7xl': 'text-7xl font-extrabold leading-10',
-    '6xl': 'text-6xl font-extrabold leading-10',
-    '5xl': 'text-5xl font-bold      leading-8',
-    '4xl': 'text-4xl font-bold      leading-8',
-    '3xl': 'text-3xl font-bold      leading-6',
-    '2xl': 'text-2xl font-bold      leading-6',
-    'xl':  'text-xl  font-bold      leading-4',
+    '7xl': 'text-4xl md:text-5xl lg:text-7xl font-extrabold leading-8 md:leading-10',
+    '6xl': 'text-3xl md:text-4xl lg:text-6xl font-extrabold leading-8 md:leading-10',
+    '5xl': 'text-2xl md:text-4xl lg:text-5xl font-bold      leading-6 md:leading-8',
+    '4xl': 'text-xl  md:text-3xl lg:text-4xl font-bold      leading-6 md:leading-8',
+    '3xl': 'text-lg  md:text-2xl lg:text-3xl font-bold      leading-4 md:leading-6',
+    '2xl': 'text-base md:text-xl lg:text-2xl font-bold      leading-4 md:leading-6',
+    'xl':  'text-sm  md:text-lg  lg:text-xl  font-bold      leading-2 md:leading-4',
   };
 
   return (
