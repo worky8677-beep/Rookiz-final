@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router";
+import { useMovieModal } from "../context/MovieModalContext";
 import { Nav } from "../components/Nav";
 import { Footer } from "../components/Footer";
 import { AgeTabGroup } from "../components/AgeTabGroup";
@@ -38,7 +38,7 @@ export default function MainPage({ mode = "kids" }) {
   const [latestMovies, setLatestMovies] = useState([]);
   const [englishContent, setEnglishContent] = useState([]);
   const [error, setError] = useState(false);
-  const navigate = useNavigate();
+  const { openMovie } = useMovieModal();
 
   useEffect(() => {
     setError(false);
@@ -52,12 +52,8 @@ export default function MainPage({ mode = "kids" }) {
     if (!isKids) safe(fetchJuniorDrama(), setDrama);
   }, [isKids]);
 
-  const openDetail = (item) => {
-    const type = item.media_type === "tv" || item.first_air_date ? "tv" : "movie";
-    navigate(`/movie/${item.id}${type === "tv" ? "?type=tv" : ""}`);
-  };
-
-  const openDetailById = (id) => navigate(`/movie/${id}`);
+  const openDetail = (item) => openMovie(item.id);
+  const openDetailById = (id) => openMovie(id);
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center">
@@ -88,12 +84,12 @@ export default function MainPage({ mode = "kids" }) {
             layout="grid"
             badge="eng"
             filter={(item) => item.original_language === "en"}
-            onItemClick={isKids ? openDetail : (item) => navigate(`/movie/${item.id}?type=tv`)}
+            onItemClick={openDetail}
             className="px-4 md:px-10"
           />
 
           <ContentRow title="루의 추천" className="px-4 md:px-10">
-            <div className="grid grid-cols-2 lg:grid-cols-4 lg:grid-rows-2 gap-4 md:gap-10">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 lg:grid-rows-2 gap-4 md:gap-6 lg:gap-10">
               {movies.slice(0, 5).map((item, i) => (
                 <div key={item.id} className={i === 0 ? "col-span-2 lg:row-span-2" : ""}>
                   <Card

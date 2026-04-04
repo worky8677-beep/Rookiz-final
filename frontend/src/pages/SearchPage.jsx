@@ -78,19 +78,19 @@ export default function SearchPage() {
     <div className="min-h-screen bg-white flex flex-col font-sans">
       <Nav activeTab="main" />
 
-      <main className="flex-1 w-full max-w-container mx-auto px-6 py-10 md:py-20 flex flex-col gap-10 md:gap-16">
-        <div className="flex flex-col gap-6 items-center text-center">
-          <h1 className="text-3xl md:text-5xl font-black text-gray-800">
+      <main className="flex-1 w-full max-w-container mx-auto px-4 md:px-6 py-8 md:py-16 lg:py-20 flex flex-col gap-8 md:gap-16">
+        <div className="flex flex-col gap-4 md:gap-6 items-center text-center">
+          <h1 className="text-2xl md:text-4xl lg:text-5xl font-black text-gray-800">
             무엇을 찾고 있나요?
           </h1>
           <Searchbar className="w-full max-w-searchbar" onSearch={handleSearch} />
         </div>
 
         {selectedMovie && (
-          <div className="bg-gray-50 rounded-4xl p-8 md:p-12 flex flex-col md:flex-row gap-8 items-center border border-gray-100">
-            <img 
-              src={getImageUrl(selectedMovie.poster_path)} 
-              className="w-48 md:w-64 rounded-card-xl shadow-xl"
+          <div className="bg-gray-50 rounded-4xl p-5 md:p-8 lg:p-12 flex flex-col md:flex-row gap-5 md:gap-8 items-center border border-gray-100">
+            <img
+              src={getImageUrl(selectedMovie.poster_path)}
+              className="w-36 md:w-48 lg:w-64 rounded-card-xl shadow-xl shrink-0"
               alt={selectedMovie.title}
             />
             <div className="flex flex-col gap-4">
@@ -104,8 +104,8 @@ export default function SearchPage() {
                 </span>
               </div>
 
-              <h2 className="text-3xl md:text-5xl font-black">{selectedMovie.title}</h2>
-              <p className="text-gray-600 text-lg leading-6 md:leading-8 max-w-2xl">
+              <h2 className="text-xl md:text-3xl lg:text-5xl font-black">{selectedMovie.title}</h2>
+              <p className="text-gray-600 text-sm md:text-base lg:text-lg leading-6 md:leading-8 max-w-2xl">
                 {selectedMovie.overview || "상세 정보가 준비되지 않았습니다."}
               </p>
               
@@ -123,7 +123,7 @@ export default function SearchPage() {
           {isLoading ? (
             <div className="w-full py-20 text-center font-bold text-gray-400 text-2xl">검색 중...</div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-10">
               {results.length > 0 ? (
                 results.map(movie => (
                   <Card 

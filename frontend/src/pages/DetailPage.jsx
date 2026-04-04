@@ -10,6 +10,7 @@ import {
   faLeaf,
   faChevronRight,
   faPlay,
+
 } from "@fortawesome/free-solid-svg-icons";
 import { fetchMovieDetail, fetchMovieVideos, fetchSimilarMovies, getImageUrl } from "../api/api";
 import { Nav } from "../components/Nav";
@@ -18,6 +19,7 @@ import { Footer } from "../components/Footer";
 import { Card } from "../components/Card";
 import { VideoPlayer } from "../components/VideoPlayer";
 import { Tag } from "../components/Card";
+import { useMovieModal } from "../context/MovieModalContext";
 
 function Chip({ variant, label }) {
   const styles = {
@@ -118,7 +120,7 @@ function TabBtn({ label, active, onClick }) {
     <button
       onClick={onClick}
       className={twMerge(
-        "px-8 py-4 text-base font-bold relative transition-colors",
+        "px-4 md:px-8 py-3 md:py-4 text-sm md:text-base font-bold relative transition-colors whitespace-nowrap",
         active ? "text-gray-950" : "text-gray-300"
       )}
     >
@@ -128,9 +130,12 @@ function TabBtn({ label, active, onClick }) {
   );
 }
 
-export default function DetailPage() {
-  const { movieId } = useParams();
+export default function DetailPage({ movieId: propMovieId, onClose }) {
+  const { movieId: paramId } = useParams();
   const navigate = useNavigate();
+  const { openMovie } = useMovieModal();
+  const movieId = propMovieId ?? paramId;
+
   const [movie, setMovie] = useState(null);
   const [videos, setVideos] = useState([]);
   const [similar, setSimilar] = useState([]);
@@ -155,19 +160,37 @@ export default function DetailPage() {
         console.error(err);
       } finally {
         setLoading(false);
-        window.scrollTo(0, 0);
+        if (!onClose) window.scrollTo(0, 0);
       }
     };
     load();
   }, [movieId]);
 
+  const handleSimilarClick = (id) => {
+    if (onClose) {
+      openMovie(id);
+    } else {
+      navigate(`/movie/${id}`);
+    }
+  };
+
   if (loading) {
+    if (onClose) {
+      return (
+        <div className="flex items-center justify-center h-64 gap-4 flex-col">
+          <div className="size-16 bg-primary-300 rounded-full flex items-center justify-center animate-bounce overflow-hidden border-4 border-white">
+            <img src="/Airoo-circle.png" className="w-full h-full object-cover" alt="루" />
+          </div>
+          <p className="text-base font-black text-primary-600 animate-pulse font-sans">로딩중...</p>
+        </div>
+      );
+    }
     return (
       <div className="bg-white flex flex-col items-center justify-center gap-6 min-h-screen">
-        <div className="size-48 bg-primary-300 rounded-full flex items-center justify-center shadow-lg animate-bounce overflow-hidden border-4 border-white">
+        <div className="size-28 md:size-48 bg-primary-300 rounded-full flex items-center justify-center shadow-lg animate-bounce overflow-hidden border-4 border-white">
           <img src="/Airoo-circle.png" className="w-full h-full object-cover" alt="루" />
         </div>
-        <p className="text-3xl font-black text-primary-600 animate-pulse font-sans">로딩중...</p>
+        <p className="text-xl md:text-3xl font-black text-primary-600 animate-pulse font-sans">로딩중...</p>
       </div>
     );
   }
@@ -177,122 +200,128 @@ export default function DetailPage() {
   const trailer = videos.find((v) => v.type === "Trailer" && v.site === "YouTube") || videos[0];
   const poster = getImageUrl(movie.backdrop_path || movie.poster_path, "original");
 
+  const content = (
+    <div className={onClose ? "" : "bg-white overflow-hidden relative min-h-screen"}>
+      {/* ── 1. Video Player ── */}
+      <VideoPlayer
+        youtubeKey={trailer?.key}
+        poster={poster}
+        title={movie.title}
+        subtitle={`시즌 2 · ${DEFAULT_EP_ID}화 - 우주의 신비`}
+        onBack={onClose ?? (() => navigate(-1))}
+        className={onClose ? "" : "max-h-[560px]"}
+      />
+
+      {/* ── 2. Content Info Section ── */}
+      <section className="w-full px-4 md:px-8 lg:px-12 py-6 md:py-8">
+        <div className="flex flex-col gap-5 md:gap-6">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex flex-col gap-2.5 flex-1 min-w-0 text-left">
+              <div className="flex flex-wrap gap-2">
+                <Chip variant="kids" label="키즈 4~7세" />
+                <Chip variant="new" label="신규" />
+              </div>
+              <h1 className="text-xl md:text-2xl lg:text-3xl font-extrabold text-gray-950 leading-tight">{movie.title}</h1>
+              <p className="text-base text-gray-300 font-medium">· 24화 · 모험/판타지</p>
+              <p className="text-base text-gray-600 leading-relaxed font-medium mt-1 max-w-[800px]">
+                {movie.overview || "꼬마 탐험가 루나와 친구들이 신비로운 우주를 탐험하며 펼치는 신나는 모험! 별자리의 비밀을 풀고, 외계인 친구들과 우정을 나누며 성장하는 이야기를 담았어요."}
+              </p>
+              <div className="flex flex-wrap gap-2 mt-2">
+                <Tag label="# 모험" />
+                <Tag label="# 과학" />
+                <Tag label="# 새로운 콘텐츠" />
+              </div>
+            </div>
+
+            <div className="flex gap-3 shrink-0 pt-1">
+              <Button variant="action" icon={faHeart} label="좋아요" />
+              <Button variant="action" icon={faShareNodes} label="공유" />
+              <Button variant="action" icon={faDownload} label="다운로드" />
+            </div>
+          </div>
+
+          <button className="w-full h-15 bg-primary-500 hover:bg-primary-400 text-gray-950 font-extrabold text-lg rounded-2xl flex items-center justify-center gap-2.5 transition-colors shadow-lg">
+            <FontAwesomeIcon icon={faPlay} className="text-base" />
+            <span>13화부터 이어보기</span>
+          </button>
+        </div>
+
+        {/* ── 3. Tabs & Episode List ── */}
+        <div className="mt-12">
+          <div className="flex items-center gap-4 mb-6">
+            <span className="text-base font-bold text-gray-950">시즌</span>
+            {[1, 2].map((n) => (
+              <button
+                key={n}
+                onClick={() => setSelectedSeason(n)}
+                className={twMerge(
+                  "px-6 py-2.5 rounded-xl text-base font-bold transition-all",
+                  selectedSeason === n ? "bg-primary-500 text-gray-950" : "bg-white text-gray-600 border border-gray-100"
+                )}
+              >시즌 {n}</button>
+            ))}
+          </div>
+
+          <div className="flex border-b border-gray-100 mb-6 md:mb-8 overflow-x-auto scrollbar-hide">
+            <TabBtn label="에피소드" active={activeTab === "episodes"} onClick={() => setActiveTab("episodes")} />
+            <TabBtn label="콘텐츠 정보" active={activeTab === "info"} onClick={() => setActiveTab("info")} />
+          </div>
+
+          {activeTab === "episodes" && (
+            <div className="flex flex-col gap-4 pb-10">
+              {MOCK_EPISODES.map((ep) => (
+                <EpisodeCard
+                  key={ep.id}
+                  episode={ep}
+                  active={ep.episode_number === 5}
+                  onClick={() => {}}
+                />
+              ))}
+            </div>
+          )}
+
+          {activeTab === "info" && (
+            <div className="py-8 text-gray-600 font-medium text-lg min-h-[300px] text-left">
+              <p>여기에 콘텐츠의 상세 제작 정보나 관련 스토리가 들어갑니다.</p>
+              <p className="mt-4">감독: 루나 스튜디오</p>
+              <p>출연: 루, 키키, 아로</p>
+            </div>
+          )}
+        </div>
+
+        {/* ── 4. 추천 콘텐츠 ── */}
+        {similar.length > 0 && (
+          <div className="mt-8 md:mt-16 pb-10">
+            <h2 className="text-base md:text-xl font-extrabold text-gray-950 mb-4 md:mb-6 text-left">이런 콘텐츠도 있어요</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+              {similar.slice(0, 4).map((m) => (
+                <div
+                  key={m.id}
+                  className="cursor-pointer"
+                  onClick={() => handleSimilarClick(m.id)}
+                >
+                  <Card
+                    title={m.title}
+                    image={getImageUrl(m.poster_path, "w300")}
+                    size="sm"
+                    className="aspect-[3/4] rounded-3_5xl"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </section>
+    </div>
+  );
+
+  if (onClose) return content;
+
   return (
     <div className="min-h-screen bg-white">
       <Nav activeTab="main" />
       <main className="pb-16">
-        <div className="bg-white overflow-hidden relative min-h-screen">
-          {/* ── 1. Video Player ── */}
-          <VideoPlayer
-            youtubeKey={trailer?.key}
-            poster={poster}
-            title={movie.title}
-            subtitle={`시즌 2 · ${DEFAULT_EP_ID}화 - 우주의 신비`}
-            onBack={() => navigate(-1)}
-            className="max-h-[560px]"
-          />
-
-          {/* ── 2. Content Info Section ── */}
-          <section className="w-full px-5 md:px-12 py-8">
-            <div className="flex flex-col gap-6">
-              <div className="flex items-start justify-between">
-                <div className="flex flex-col gap-2.5 flex-1 min-w-0 text-left">
-                  <div className="flex gap-2">
-                    <Chip variant="kids" label="키즈 4~7세" />
-                    <Chip variant="new" label="신규" />
-                  </div>
-                  <h1 className="text-3xl font-extrabold text-gray-950 leading-tight">{movie.title}</h1>
-                  <p className="text-base text-gray-300 font-medium">· 24화 · 모험/판타지</p>
-                  <p className="text-base text-gray-600 leading-relaxed font-medium mt-1 max-w-[800px]">
-                    {movie.overview || "꼬마 탐험가 루나와 친구들이 신비로운 우주를 탐험하며 펼치는 신나는 모험! 별자리의 비밀을 풀고, 외계인 친구들과 우정을 나누며 성장하는 이야기를 담았어요."}
-                  </p>
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    <Tag label="# 모험" />
-                    <Tag label="# 과학" />
-                    <Tag label="# 새로운 콘텐츠" />
-                  </div>
-                </div>
-
-                <div className="flex gap-3 shrink-0 pt-1">
-                  <Button variant="action" icon={faHeart} label="좋아요" />
-                  <Button variant="action" icon={faShareNodes} label="공유" />
-                  <Button variant="action" icon={faDownload} label="다운로드" />
-                </div>
-              </div>
-
-              <button className="w-full h-15 bg-primary-500 hover:bg-primary-400 text-gray-950 font-extrabold text-lg rounded-2xl flex items-center justify-center gap-2.5 transition-colors shadow-lg">
-                <FontAwesomeIcon icon={faPlay} className="text-base" />
-                <span>13화부터 이어보기</span>
-              </button>
-            </div>
-
-            {/* ── 3. Tabs & Episode List ── */}
-            <div className="mt-12">
-              <div className="flex items-center gap-4 mb-6">
-                <span className="text-base font-bold text-gray-950">시즌</span>
-                {[1, 2].map((n) => (
-                  <button
-                    key={n}
-                    onClick={() => setSelectedSeason(n)}
-                    className={twMerge(
-                      "px-6 py-2.5 rounded-xl text-base font-bold transition-all",
-                      selectedSeason === n ? "bg-primary-500 text-gray-950" : "bg-white text-gray-600 border border-gray-100"
-                    )}
-                  >시즌 {n}</button>
-                ))}
-              </div>
-
-              <div className="flex border-b border-gray-100 mb-8">
-                <TabBtn label="에피소드" active={activeTab === "episodes"} onClick={() => setActiveTab("episodes")} />
-                <TabBtn label="콘텐츠 정보" active={activeTab === "info"} onClick={() => setActiveTab("info")} />
-              </div>
-
-              {activeTab === "episodes" && (
-                <div className="flex flex-col gap-4 pb-10">
-                  {MOCK_EPISODES.map((ep) => (
-                    <EpisodeCard
-                      key={ep.id}
-                      episode={ep}
-                      active={ep.episode_number === 5}
-                      onClick={() => {}}
-                    />
-                  ))}
-                </div>
-              )}
-
-              {activeTab === "info" && (
-                <div className="py-8 text-gray-600 font-medium text-lg min-h-[300px] text-left">
-                  <p>여기에 콘텐츠의 상세 제작 정보나 관련 스토리가 들어갑니다.</p>
-                  <p className="mt-4">감독: 루나 스튜디오</p>
-                  <p>출연: 루, 키키, 아로</p>
-                </div>
-              )}
-            </div>
-
-            {/* ── 4. 추천 콘텐츠 ── */}
-            {similar.length > 0 && (
-              <div className="mt-16 pb-10">
-                <h2 className="text-xl font-extrabold text-gray-950 mb-6 text-left">이런 콘텐츠도 있어요</h2>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                  {similar.slice(0, 4).map((m) => (
-                    <div
-                      key={m.id}
-                      className="cursor-pointer"
-                      onClick={() => navigate(`/movie/${m.id}`)}
-                    >
-                      <Card
-                        title={m.title}
-                        image={getImageUrl(m.poster_path, "w300")}
-                        size="sm"
-                        className="aspect-[3/4] rounded-3_5xl"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </section>
-        </div>
+        {content}
       </main>
       <Footer />
     </div>

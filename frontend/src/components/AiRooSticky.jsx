@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { Input } from "./Input";
 
 const imgRoo = "/Airoo-circle.png";
 const imgBubble = "/Airoo-talkbubble.png";
@@ -51,13 +52,14 @@ function ChatMessages({ messages, loading, bottomRef }) {
 function ChatInput({ input, loading, onInputChange, onSend, onKeyDown }) {
   return (
     <div className="flex border-t border-gray-100 p-2 gap-2 bg-white">
-      <input
+      <Input
+        variant="chat"
         value={input}
         onChange={onInputChange}
         onKeyDown={onKeyDown}
         placeholder="메시지를 입력하세요..."
         disabled={loading}
-        className="flex-1 bg-gray-50 border border-gray-200 rounded-full py-2 px-4 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-primary-400 transition-colors"
+        className="flex-1"
       />
       <button
         onClick={onSend}

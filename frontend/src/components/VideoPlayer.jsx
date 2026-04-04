@@ -1,6 +1,8 @@
 import { useState, useRef } from "react";
 import ReactPlayer from "react-player";
 import { twMerge } from "tailwind-merge";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTv } from "@fortawesome/free-solid-svg-icons";
 
 const ICONS = {
   play:       "https://www.figma.com/api/mcp/asset/7d614a2a-0c5c-4e83-bb65-eed4d14c82d8",
@@ -14,48 +16,28 @@ const ICONS = {
   back:       "https://www.figma.com/api/mcp/asset/e832e8b4-1b35-45bc-8a96-621e43ea64de",
 };
 
-const CTRL_SIZE = { sm: "size-[33px]", md: "size-9.5" };
-const ICON_SIZE = { sm: "size-[15px]", md: "size-[17px]", lg: "size-4" };
-
-/** 뒤로가기 버튼 */
-function BackBtn({ onClick }) {
-  return (
-    <button
-      onClick={onClick}
-      aria-label="뒤로가기"
-      className="flex items-center justify-center size-9.5 rounded-full bg-gray-950/60 hover:bg-gray-950/80 transition-colors shrink-0"
-    >
-      <img src={ICONS.back} alt="" className="size-[21px] object-contain" />
-    </button>
-  );
-}
-
-/** 소형 컨트롤 버튼 */
-function CtrlBtn({ icon, iconSize = "md", size = "md", onClick, className }) {
+/**
+ * 컨트롤 버튼 — icon(이미지 URL) 또는 faIcon(FA 아이콘) 중 하나를 전달
+ * 모든 버튼 size-[33px] 통일, 호버 시 더 투명하게
+ */
+function CtrlBtn({ icon, faIcon, onClick, className, ...props }) {
   return (
     <button
       onClick={onClick}
       className={twMerge(
-        "flex items-center justify-center rounded-full bg-white/12 hover:bg-white/22 transition-colors shrink-0",
-        CTRL_SIZE[size],
+        "size-[33px] flex items-center justify-center rounded-full bg-gray-950/60 hover:bg-gray-950/30 transition-colors shrink-0",
         className
       )}
+      {...props}
     >
-      <img src={icon} alt="" className={twMerge("object-contain", ICON_SIZE[iconSize])} />
+      {faIcon
+        ? <FontAwesomeIcon icon={faIcon} className="text-white text-[15px]" />
+        : <img src={icon} alt="" className="size-[15px] object-contain" />
+      }
     </button>
   );
 }
 
-/** 자막 버튼 */
-function CaptionBtn() {
-  return (
-    <button className="flex items-center justify-center size-9.5 rounded-full bg-primary-500 hover:bg-primary-400 transition-colors shrink-0">
-      <img src={ICONS.caption} alt="자막" className="size-4 object-contain" />
-    </button>
-  );
-}
-
-/** 재생/일시정지 버튼 */
 function PlayPauseBtn({ playing, onClick }) {
   return (
     <button
@@ -72,12 +54,11 @@ function PlayPauseBtn({ playing, onClick }) {
   );
 }
 
-/** 건너뛰기 버튼 */
 function SkipBtn({ onClick }) {
   return (
     <button
       onClick={onClick}
-      className="h-[27px] px-[13px] rounded-xl flex items-center justify-center bg-gray-950/60 hover:bg-gray-950/80 transition-colors"
+      className="h-[27px] px-[13px] rounded-xl flex items-center justify-center bg-gray-950/60 hover:bg-gray-950/30 transition-colors"
     >
       <span className="text-white font-extrabold text-sm font-sans leading-5 whitespace-nowrap">
         건너뛰기
@@ -86,7 +67,6 @@ function SkipBtn({ onClick }) {
   );
 }
 
-/** 진행바 + 시간 표시 */
 function ProgressBar({ played, duration, onSeek }) {
   const formatTime = (sec) => {
     const m = Math.floor(sec / 60).toString().padStart(2, "0");
@@ -122,16 +102,6 @@ function ProgressBar({ played, duration, onSeek }) {
   );
 }
 
-/**
- * 공용 비디오 플레이어
- *
- * @param {string} youtubeKey  YouTube 영상 key
- * @param {string} poster      배경 이미지 URL
- * @param {string} title       상단 제목
- * @param {string} subtitle    부제목
- * @param {function} onBack    뒤로가기 콜백
- * @param {string} className   추가 클래스
- */
 export function VideoPlayer({ youtubeKey, poster, title, subtitle, onBack, className }) {
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(false);
@@ -189,10 +159,10 @@ export function VideoPlayer({ youtubeKey, poster, title, subtitle, onBack, class
           className="absolute inset-0 flex flex-col"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* 상단: 뒤로가기 + 제목 + 볼륨/풀스크린 */}
+          {/* 상단: 뒤로가기 + 제목 + 우측 버튼 */}
           <div className="flex items-start justify-between px-5 pt-5 md:px-7 md:pt-6">
             <div className="flex items-center gap-3">
-              <BackBtn onClick={onBack} />
+              <CtrlBtn icon={ICONS.back} onClick={onBack} aria-label="뒤로가기" />
               <div className="flex flex-col gap-0.5 min-w-0">
                 {title && (
                   <p className="text-white font-extrabold text-sm md:text-base font-sans leading-5 truncate">
@@ -204,42 +174,60 @@ export function VideoPlayer({ youtubeKey, poster, title, subtitle, onBack, class
                 )}
               </div>
             </div>
+
+            {/* 우: 재생 전 — 기기변경 / 재생 중 — 볼륨 + 풀스크린 */}
             <div className="flex items-center gap-2 shrink-0">
-              <CtrlBtn
-                icon={muted ? ICONS.muted : ICONS.volume}
-                size="sm"
-                iconSize="sm"
-                onClick={toggleMute}
-              />
-              <CtrlBtn
-                icon={ICONS.fullscreen}
-                size="md"
-                iconSize="lg"
-              />
+              {playing ? (
+                <>
+                  <CtrlBtn icon={muted ? ICONS.muted : ICONS.volume} onClick={toggleMute} aria-label={muted ? "음소거 해제" : "음소거"} />
+                  <CtrlBtn icon={ICONS.fullscreen} aria-label="전체화면" />
+                </>
+              ) : (
+                <CtrlBtn faIcon={faTv} aria-label="기기 변경" />
+              )}
             </div>
           </div>
 
-          {/* 중앙: Prev + Play/Pause + Next */}
+          {/* 중앙: 재생 전 — 큰 재생 버튼 / 재생 중 — Prev + Play/Pause + Next */}
           <div className="flex-1 flex flex-col items-center justify-center gap-3">
-            <div className="flex items-center gap-6 md:gap-10">
-              <CtrlBtn icon={ICONS.prev} size="md" iconSize="md" />
-              <PlayPauseBtn playing={playing} onClick={togglePlay} />
-              <CtrlBtn icon={ICONS.next} size="md" iconSize="md" />
-            </div>
-            {!playing && (
-              <p className="text-white font-semibold text-sm md:text-base font-sans mt-2">
-                ▶ 재생 버튼을 눌러 시작하세요
-              </p>
+            {playing ? (
+              <div className="flex items-center gap-6 md:gap-10">
+                <CtrlBtn icon={ICONS.prev} aria-label="이전" />
+                <PlayPauseBtn playing={playing} onClick={togglePlay} />
+                <CtrlBtn icon={ICONS.next} aria-label="다음" />
+              </div>
+            ) : (
+              <>
+                <PlayPauseBtn playing={playing} onClick={togglePlay} />
+                <p className="text-white font-semibold text-sm md:text-base font-sans mt-2">
+                  ▶ 재생 버튼을 눌러 시작하세요
+                </p>
+              </>
             )}
           </div>
 
-          {/* 하단: 건너뛰기 + 자막 + 진행바 */}
+          {/* 하단: 재생 전 — 진행바 + 볼륨(우하단) / 재생 중 — 건너뛰기 + 자막 + 진행바 */}
           <div className="flex flex-col gap-3 px-5 pb-5 md:px-7 md:pb-6">
-            <div className="flex items-center justify-between">
-              <SkipBtn />
-              <CaptionBtn />
-            </div>
-            <ProgressBar played={played} duration={duration} onSeek={handleSeek} />
+            {playing ? (
+              <>
+                <div className="flex items-center justify-between">
+                  <SkipBtn />
+                  <CtrlBtn
+                    icon={ICONS.caption}
+                    aria-label="자막"
+                    className="bg-primary-500 hover:bg-primary-400"
+                  />
+                </div>
+                <ProgressBar played={played} duration={duration} onSeek={handleSeek} />
+              </>
+            ) : (
+              <>
+                <ProgressBar played={played} duration={duration} onSeek={handleSeek} />
+                <div className="flex justify-end">
+                  <CtrlBtn icon={muted ? ICONS.muted : ICONS.volume} onClick={toggleMute} aria-label={muted ? "음소거 해제" : "음소거"} />
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}

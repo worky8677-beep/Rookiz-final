@@ -36,7 +36,7 @@ export function Footer({ className }) {
         </div>
 
         {/* 링크 */}
-        <div className="flex flex-wrap gap-x-8 gap-y-2 md:gap-12">
+        <div className="flex flex-wrap gap-x-6 gap-y-2 md:gap-x-8 lg:gap-12">
           {LINKS.map((label) => (
             <a key={label} href="#" className="text-sm text-gray-400 font-medium hover:text-gray-600">
               {label}
