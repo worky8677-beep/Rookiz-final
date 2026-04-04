@@ -161,8 +161,15 @@ export const fetchContentDetail = async (id, mediaType = "movie") => {
 
 export const fetchContentVideos = async (id, mediaType = "movie") => {
   try {
-    const response = await api.get(`${mediaType}/${id}/videos`);
-    return response.data.results;
+    const res = await api.get(`${mediaType}/${id}/videos`);
+    let results = res.data.results;
+    // ko-KR 결과에 YouTube 트레일러가 없으면 en-US로 재시도
+    const hasYoutube = results.some((v) => v.site === "YouTube");
+    if (!hasYoutube) {
+      const enRes = await api.get(`${mediaType}/${id}/videos`, { params: { language: "en-US" } });
+      results = enRes.data.results;
+    }
+    return results;
   } catch (error) {
     console.error("콘텐츠 비디오 로드 실패:", error);
     return [];
