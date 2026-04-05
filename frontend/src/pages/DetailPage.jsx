@@ -10,8 +10,11 @@ import {
   faStar,
   faChevronRight,
   faPlay,
+  faBolt,
+  faThumbsUp,
+  faGlobe,
 } from "@fortawesome/free-solid-svg-icons";
-import { fetchContentDetail, fetchContentVideos, fetchSimilarContent, getImageUrl } from "../api/api";
+import { fetchContentDetail, fetchContentVideos, fetchSimilarContent, fetchSeasonEpisodes, getImageUrl } from "../api/api";
 import { Nav } from "../components/Nav";
 import { Footer } from "../components/Footer";
 import { Card } from "../components/Card";
@@ -36,16 +39,40 @@ function Pill({ children, className }) {
 
 /** Chip — 카테고리/등급 식별자 (아이콘 + 라벨) */
 const CHIP_VARIANTS = {
-  kids: { bg: "bg-green-200 text-green-600", icon: faLeaf,  label: "키즈 4~7세" },
-  new:  { bg: "bg-primary-400 text-primary-700", icon: faStar, label: "신규" },
+  kids:      { bg: "bg-green-200 text-green-700",         icon: faLeaf,     label: "키즈 4~7세" },
+  junior:    { bg: "bg-blue-200 text-blue-700",           icon: faBolt,     label: "주니어 8~12세" },
+  new:       { bg: "bg-primary-400 text-primary-700",     icon: faStar,     label: "신규" },
+  popular:   { bg: "bg-secondary-400 text-secondary-900", icon: faThumbsUp, label: "인기" },
+  recommend: { bg: "bg-blue-400 text-blue-950",           icon: faHeart,    label: "추천" },
+  english:   { bg: "bg-green-400 text-green-900",           icon: faGlobe,    label: "ENG" },
 };
 function Chip({ variant }) {
-  const { bg, icon, label } = CHIP_VARIANTS[variant];
+  const v = CHIP_VARIANTS[variant];
+  if (!v) return null;
   return (
-    <Pill className={twMerge("text-sm font-bold", bg)}>
-      <FontAwesomeIcon icon={icon} className="size-3.5" />
-      {label}
+    <Pill className={twMerge("text-sm font-bold", v.bg)}>
+      <FontAwesomeIcon icon={v.icon} className="size-5" />
+      {v.label}
     </Pill>
+  );
+}
+
+/** RatingStars — 별 5개 + 숫자 점수 (TMDB 10점 → 5점 변환) */
+function RatingStars({ score }) {
+  if (!score) return null;
+  const out5 = score / 2;
+  const filled = Math.round(out5);
+  return (
+    <div className="flex items-center gap-1">
+      {Array.from({ length: 5 }, (_, i) => (
+        <FontAwesomeIcon
+          key={i}
+          icon={faStar}
+          className={twMerge("text-xs", i < filled ? "text-primary-500" : "text-gray-50 opacity-50")}
+        />
+      ))}
+      <span className="text-sm font-bold text-primary-500 leading-2">{out5.toFixed(1)}</span>
+    </div>
   );
 }
 
@@ -101,7 +128,7 @@ function EpisodeThumbnail({ stillPath, progress, active }) {
   return (
     <div className="relative w-20 h-14 rounded-2xl overflow-hidden shrink-0 bg-gray-200">
       {stillPath && (
-        <img src={`https://image.tmdb.org/t/p/w200${stillPath}`} alt="" className="w-full h-full object-cover" />
+        <img src={getImageUrl(stillPath, "w200")} alt="" className="w-full h-full object-cover" />
       )}
 
       {/* 완료: 반투명 오버레이 + 재생 아이콘 */}
@@ -212,7 +239,7 @@ function TabBtn({ label, active, onClick }) {
 function SectionHeader({ title, onViewAll }) {
   return (
     <div className="flex items-center justify-between">
-      <h2 className="text-sm font-extrabold text-gray-950">{title}</h2>
+      <h2 className="text-base font-extrabold text-gray-950">{title}</h2>
       {onViewAll && (
         <button onClick={onViewAll} className="flex items-center gap-1 text-sm font-bold text-gray-600">
           더보기
@@ -272,17 +299,7 @@ function ContentInfoTab({ movie, mediaType }) {
 // 4. 데이터 상수
 // ================================================================
 
-const DEFAULT_SEASON = 2;
-const DEFAULT_EP_ID  = 13;
-
-const MOCK_EPISODES = [
-  { id: 1, episode_number: 1, name: "우주의 신비",   runtime: 18, progress: 100, still_path: null },
-  { id: 2, episode_number: 2, name: "별자리의 비밀", runtime: 18, progress: 100, still_path: null },
-  { id: 3, episode_number: 3, name: "외계인 친구",   runtime: 18, progress: 100, still_path: null },
-  { id: 4, episode_number: 4, name: "블랙홀 탈출",   runtime: 18, progress: 72,  still_path: null },
-  { id: 5, episode_number: 5, name: "은하수 기차",   runtime: 18, progress: 0,   still_path: null },
-  { id: 6, episode_number: 6, name: "로봇 행성",     runtime: 18, progress: 0,   still_path: null },
-];
+const DEFAULT_SEASON = 1;
 
 // ================================================================
 // 4. 페이지 컴포넌트
@@ -292,18 +309,21 @@ export default function DetailPage({ movieId: propMovieId, mediaType: propMediaT
   const { movieId: paramId } = useParams();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { openMovie, mediaType: ctxMediaType } = useMovieModal();
+  const { openMovie, mediaType: ctxMediaType, ageGroup, section } = useMovieModal();
   const movieId = propMovieId ?? paramId;
   const mediaType = propMediaType ?? searchParams.get("type") ?? ctxMediaType ?? "movie";
 
-  const [movie,   setMovie]   = useState(null);
-  const [videos,  setVideos]  = useState([]);
-  const [similar, setSimilar] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [movie,    setMovie]    = useState(null);
+  const [videos,   setVideos]   = useState([]);
+  const [similar,  setSimilar]  = useState([]);
+  const [loading,  setLoading]  = useState(true);
 
-  const [activeTab,      setActiveTab]      = useState("episodes");
-  const [selectedSeason, setSelectedSeason] = useState(DEFAULT_SEASON);
-  const [liked,          setLiked]          = useState(false);
+  const [activeTab,       setActiveTab]       = useState(mediaType === "tv" ? "episodes" : "info");
+  const [selectedSeason,  setSelectedSeason]  = useState(DEFAULT_SEASON);
+  const [liked,           setLiked]           = useState(false);
+  const [showAllSeasons,  setShowAllSeasons]  = useState(false);
+  const [episodes,        setEpisodes]        = useState([]);
+  const [epLoading,       setEpLoading]       = useState(false);
 
   useEffect(() => {
     if (!movieId) return;
@@ -333,6 +353,17 @@ export default function DetailPage({ movieId: propMovieId, mediaType: propMediaT
     return () => { stale = true; };
   }, [movieId, mediaType]);
 
+  // TV일 때 시즌 변경 시 에피소드 로드
+  useEffect(() => {
+    if (!movieId || mediaType !== "tv") return;
+    let stale = false;
+    setEpLoading(true);
+    fetchSeasonEpisodes(movieId, selectedSeason).then((eps) => {
+      if (!stale) { setEpisodes(eps); setEpLoading(false); }
+    });
+    return () => { stale = true; };
+  }, [movieId, mediaType, selectedSeason]);
+
   const handleSimilarClick = (id) => {
     if (onClose) openMovie(id);
     else navigate(`/movie/${id}`);
@@ -361,9 +392,17 @@ export default function DetailPage({ movieId: propMovieId, mediaType: propMediaT
 
   if (!movie) return null;
 
-  const trailer = videos.find((v) => v.type === "Trailer" && v.site === "YouTube") || videos[0];
-  const poster  = getImageUrl(movie.backdrop_path || movie.poster_path, "original");
-  const title   = movie.title || movie.name || "";
+  const trailer  = videos.find((v) => v.type === "Trailer" && v.site === "YouTube") || videos[0];
+  const poster   = getImageUrl(movie.backdrop_path || movie.poster_path, "original");
+  const title    = movie.title || movie.name || "";
+  const isTV     = mediaType === "tv";
+  const seasons  = movie.number_of_seasons ?? 1;
+  const ctaLabel = isTV
+    ? (seasons > 1 ? `시즌 1 · 1화부터 보기` : `1화부터 보기`)
+    : "재생하기";
+  const playerSubtitle = isTV
+    ? (seasons > 1 ? `시즌 1 · 1화` : `1화`)
+    : null;
 
   // ── 본문 ────────────────────────────────────────────────────────
   const content = (
@@ -374,7 +413,7 @@ export default function DetailPage({ movieId: propMovieId, mediaType: propMediaT
         youtubeKey={trailer?.key}
         poster={poster}
         title={title}
-        subtitle={`시즌 ${DEFAULT_SEASON} · ${DEFAULT_EP_ID}화 - 우주의 신비`}
+        subtitle={playerSubtitle}
         onBack={onClose ?? (() => navigate(-1))}
         className={onClose ? "rounded-t-3xl" : "max-h-[560px]"}
         autoPlay={!!trailer?.key}
@@ -388,11 +427,21 @@ export default function DetailPage({ movieId: propMovieId, mediaType: propMediaT
           <div className="flex flex-col gap-2.5 flex-1 min-w-0">
             {/* Chip 컴포지션 */}
             <div className="flex flex-wrap gap-2">
-              <Chip variant="kids" />
-              <Chip variant="new" />
+              {ageGroup && <Chip variant={ageGroup} />}
+              {section && <Chip variant={section} />}
             </div>
             <h1 className="text-xl md:text-2xl font-extrabold text-gray-950 leading-tight">{title}</h1>
-            <p className="text-sm text-gray-300 font-medium">· 24화 · 모험/판타지</p>
+            <div className="flex items-center gap-2">
+              <RatingStars score={movie.vote_average} />
+              <p className="text-sm text-gray-300 font-medium">
+                {mediaType === "tv" && movie.number_of_episodes
+                  ? `· 총 ${movie.number_of_episodes}화`
+                  : movie.runtime
+                  ? `· ${movie.runtime}분`
+                  : null}
+                {movie.genres?.slice(0, 2).length > 0 && ` · ${movie.genres.slice(0, 2).map((g) => g.name).join(" / ")}`}
+              </p>
+            </div>
             <p className="text-sm text-gray-600 leading-snug font-medium">
               {movie.overview || "꼬마 탐험가 루나와 친구들이 신비로운 우주를 탐험하며 펼치는 신나는 모험! 별자리의 비밀을 풀고, 외계인 친구들과 우정을 나누며 성장하는 이야기를 담았어요."}
             </p>
@@ -406,49 +455,81 @@ export default function DetailPage({ movieId: propMovieId, mediaType: propMediaT
           </div>
         </div>
 
-        {/* Tag 컴포지션 */}
-        <div className="flex flex-wrap gap-2">
-          <Tag label="# 모험" />
-          <Tag label="# 과학" />
-          <Tag label="# 새로운 콘텐츠" />
-        </div>
+        {/* Tag 컴포지션 — 장르 + 제작 국가 + 사용 언어 (모두 한국어) */}
+        {(() => {
+          const COUNTRY_KO = { US: "미국", KR: "한국", JP: "일본", GB: "영국", FR: "프랑스", CN: "중국", AU: "호주", CA: "캐나다", DE: "독일", IT: "이탈리아" };
+          const LANG_KO    = { ko: "한국어", en: "영어", ja: "일본어", zh: "중국어", fr: "프랑스어", es: "스페인어", de: "독일어" };
+          const genreTags    = movie.genres?.map((g) => g.name) ?? [];
+          const countryTags  = movie.production_countries?.map((c) => COUNTRY_KO[c.iso_3166_1]).filter(Boolean) ?? [];
+          const langTags     = movie.spoken_languages?.map((l) => LANG_KO[l.iso_639_1]).filter(Boolean) ?? [];
+          const tags = [...genreTags, ...countryTags, ...langTags];
+          if (!tags.length) return null;
+          return (
+            <div className="flex flex-wrap gap-2">
+              {tags.map((label, i) => <Tag key={i} label={`# ${label}`} />)}
+            </div>
+          );
+        })()}
 
         {/* 이어보기 CTA */}
         <button className="w-full h-14 bg-primary-500 hover:bg-primary-400 text-gray-950 font-extrabold text-base rounded-2xl flex items-center justify-center gap-2.5 transition-colors">
           <FontAwesomeIcon icon={faPlay} />
-          <span>{DEFAULT_EP_ID}화부터 이어보기</span>
+          <span>{ctaLabel}</span>
         </button>
       </section>
 
       {/* ③ 시즌 + 탭 + 에피소드 */}
       <section className="px-4 md:px-5 flex flex-col gap-3 md:gap-4 pb-4 md:pb-6">
 
-        {/* SeasonBtn 컴포지션 */}
-        <div className="flex items-center gap-3">
-          <span className="text-sm font-bold text-gray-950">시즌</span>
-          {[1, 2].map((n) => (
-            <SeasonBtn key={n} n={n} active={selectedSeason === n} onClick={() => setSelectedSeason(n)} />
-          ))}
-        </div>
+        {/* SeasonBtn 컴포지션 — TV이고 시즌이 2개 이상일 때만 표시 */}
+        {mediaType === "tv" && movie.number_of_seasons > 1 && (() => {
+          const MAX = 4;
+          const total = movie.number_of_seasons;
+          const seasons = Array.from({ length: total }, (_, i) => i + 1);
+          const visible = showAllSeasons ? seasons : seasons.slice(0, MAX);
+          const hasMore = total > MAX;
+          return (
+            <div className="flex items-center gap-3 flex-wrap">
+              <span className="text-sm font-bold text-gray-950">시즌</span>
+              {visible.map((n) => (
+                <SeasonBtn key={n} n={n} active={selectedSeason === n} onClick={() => setSelectedSeason(n)} />
+              ))}
+              {hasMore && (
+                <button
+                  onClick={() => setShowAllSeasons((v) => !v)}
+                  className="px-4 py-2 rounded-[14px] text-sm font-bold text-gray-400 border border-gray-100 transition-all"
+                >
+                  {showAllSeasons ? "접기" : `+${total - MAX}더보기`}
+                </button>
+              )}
+            </div>
+          );
+        })()}
 
-        {/* TabBtn 컴포지션 */}
+        {/* TabBtn 컴포지션 — TV일 때만 에피소드 탭 표시 */}
         <div className="flex border-b border-gray-100">
-          <TabBtn label="에피소드"    active={activeTab === "episodes"} onClick={() => setActiveTab("episodes")} />
-          <TabBtn label="콘텐츠 정보" active={activeTab === "info"}     onClick={() => setActiveTab("info")} />
+          {isTV && (
+            <TabBtn label="에피소드" active={activeTab === "episodes"} onClick={() => setActiveTab("episodes")} />
+          )}
+          <TabBtn label="콘텐츠 정보" active={activeTab === "info"} onClick={() => setActiveTab("info")} />
         </div>
 
         {/* EpisodeCard 컴포지션 */}
         {activeTab === "episodes" && (
-          <div className="flex flex-col gap-3">
-            {MOCK_EPISODES.map((ep) => (
-              <EpisodeCard
-                key={ep.id}
-                episode={ep}
-                active={ep.id === 4}
-                onClick={() => {}}
-              />
-            ))}
-          </div>
+          epLoading
+            ? <p className="text-sm text-gray-400 text-center py-6 font-medium">에피소드 불러오는 중...</p>
+            : episodes.length === 0
+              ? <p className="text-sm text-gray-400 text-center py-6 font-medium">에피소드 정보가 없어요.</p>
+              : <div className="flex flex-col gap-3">
+                  {episodes.map((ep) => (
+                    <EpisodeCard
+                      key={ep.id}
+                      episode={ep}
+                      active={false}
+                      onClick={() => {}}
+                    />
+                  ))}
+                </div>
         )}
 
         {activeTab === "info" && (
@@ -468,7 +549,7 @@ export default function DetailPage({ movieId: propMovieId, mediaType: propMediaT
                   title={m.title || m.name}
                   image={getImageUrl(m.poster_path, "w300")}
                   size="sm"
-                  className="aspect-3/4 rounded-3_5xl"
+                  className="aspect-3/4 rounded-3.5xl"
                 />
               </div>
             ))}

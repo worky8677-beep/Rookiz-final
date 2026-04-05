@@ -176,8 +176,21 @@ export const fetchContentVideos = async (id, mediaType = "movie") => {
   }
 };
 
-export const fetchSimilarContent = (id, mediaType = "movie") =>
-  fetchWithFallback(`${mediaType}/${id}/similar`);
+export const fetchSimilarContent = async (id, mediaType = "movie") => {
+  const recs = await fetchWithFallback(`${mediaType}/${id}/recommendations`);
+  if (recs.length > 0) return recs;
+  return fetchWithFallback(`${mediaType}/${id}/similar`);
+};
+
+// TV 시즌 에피소드 목록
+export const fetchSeasonEpisodes = async (tvId, seasonNumber) => {
+  try {
+    const res = await api.get(`tv/${tvId}/season/${seasonNumber}`);
+    return res.data.episodes ?? [];
+  } catch {
+    return [];
+  }
+};
 
 export const fetchMovieDetail = (movieId) => fetchContentDetail(movieId, "movie");
 export const fetchMovieVideos = (movieId) => fetchContentVideos(movieId, "movie");

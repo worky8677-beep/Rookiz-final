@@ -24,7 +24,7 @@ function MovieModal() {
       onClick={closeMovie}
     >
       <div
-        className="bg-white rounded-3xl w-full max-w-[640px] max-h-[90vh] overflow-y-auto shadow-2xl"
+        className="bg-white rounded-3xl w-full max-w-[640px] lg:max-w-[800px] max-h-[90vh] overflow-y-auto shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <Suspense fallback={
