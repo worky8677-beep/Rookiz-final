@@ -364,10 +364,21 @@ export default function DetailPage({ movieId: propMovieId, mediaType: propMediaT
     return () => { stale = true; };
   }, [movieId, mediaType, selectedSeason]);
 
-  const handleSimilarClick = (id) => {
-    if (onClose) openMovie(id);
-    else navigate(`/movie/${id}`);
+  const handleSimilarClick = (m) => {
+    const type = m.first_air_date ? "tv" : "movie";
+    if (onClose) openMovie(m.id, type, ageGroup, section);
+    else navigate(`/movie/${m.id}?type=${type}`);
   };
+
+  // 연령 필터 상수
+  const FORBIDDEN_G = [18, 10749, 27, 80, 53, 9648, 10752, 36];
+  const KIDS_G      = [16, 10751, 10762];
+  const filteredSimilar = similar.filter((m) => {
+    const genres = m.genre_ids ?? m.genres?.map((g) => g.id) ?? [];
+    if (genres.some((id) => FORBIDDEN_G.includes(id))) return false;
+    if (ageGroup === "kids") return genres.some((id) => KIDS_G.includes(id));
+    return true;
+  });
 
   // ── 로딩 ────────────────────────────────────────────────────────
   if (loading) {
@@ -538,13 +549,13 @@ export default function DetailPage({ movieId: propMovieId, mediaType: propMediaT
       </section>
 
       {/* ④ 추천 콘텐츠 */}
-      {similar.length > 0 && (
+      {filteredSimilar.length > 0 && (
         <section className="px-4 md:px-5 pb-6 md:pb-8 flex flex-col gap-3 md:gap-4">
           {/* SectionHeader 컴포지션 */}
           <SectionHeader title="이런 콘텐츠도 있어요" onViewAll={() => {}} />
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {similar.slice(0, 4).map((m) => (
-              <div key={m.id} className="cursor-pointer" onClick={() => handleSimilarClick(m.id)}>
+            {filteredSimilar.slice(0, 4).map((m) => (
+              <div key={m.id} className="cursor-pointer" onClick={() => handleSimilarClick(m)}>
                 <Card
                   title={m.title || m.name}
                   image={getImageUrl(m.poster_path, "w300")}
