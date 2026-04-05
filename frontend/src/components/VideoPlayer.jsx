@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { twMerge } from "tailwind-merge";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faPlay } from "@fortawesome/free-solid-svg-icons";
+import { useEyeGuardContext } from "../context/EyeGuardContext";
 
 // ── 뒤로가기 버튼 ─────────────────────────────────────────────────
 function BackBtn({ onClick }) {
@@ -34,6 +35,18 @@ function BigPlayBtn({ onClick }) {
 // ── 메인 VideoPlayer ──────────────────────────────────────────────
 export function VideoPlayer({ youtubeKey, poster, title, subtitle, onBack, className, autoPlay = false }) {
   const [started, setStarted] = useState(autoPlay && !!youtubeKey);
+  const { running, start, stop } = useEyeGuardContext();
+
+  // 영상 재생 시 eye guard 자동 시작, 종료 시 중지
+  useEffect(() => {
+    if (started) { if (!running) start(); }
+    else stop();
+  }, [started]);
+
+  function handleBack() {
+    stop();
+    onBack?.();
+  }
 
   const iframeSrc = youtubeKey
     ? `https://www.youtube.com/embed/${youtubeKey}?autoplay=1&mute=1&rel=0&modestbranding=1&playsinline=1`
@@ -57,7 +70,7 @@ export function VideoPlayer({ youtubeKey, poster, title, subtitle, onBack, class
 
           {/* 상단 뒤로가기 */}
           <div className="absolute top-5 left-5 md:top-6 md:left-7 z-10">
-            <BackBtn onClick={onBack} />
+            <BackBtn onClick={handleBack} />
           </div>
 
           {/* 중앙: 예고편 없을 때 안내 / 있을 때 플레이 버튼 */}
@@ -91,7 +104,7 @@ export function VideoPlayer({ youtubeKey, poster, title, subtitle, onBack, class
           />
           {/* 뒤로가기 버튼만 오버레이 */}
           <div className="absolute top-5 left-5 md:top-6 md:left-7 z-10">
-            <BackBtn onClick={onBack} />
+            <BackBtn onClick={handleBack} />
           </div>
         </>
       )}

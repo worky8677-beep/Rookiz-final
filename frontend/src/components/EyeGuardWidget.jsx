@@ -2,13 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { useEyeGuard, WARN_RATIO } from "../hooks/useEyeGuard";
+import { WARN_RATIO } from "../hooks/useEyeGuard";
 import { EYE_STATUS, STATUS_TEXT, GAUGE_BG } from "../hooks/eyeGuard";
+import { useEyeGuardContext } from "../context/EyeGuardContext";
 
 export function EyeGuardDropdown() {
   const [open, setOpen] = useState(false);
   const dropRef = useRef(null);
-  const { videoRef, status, ratio, running, start, stop } = useEyeGuard();
+  const { videoRef, status, ratio, running, start, stop } = useEyeGuardContext();
 
   useEffect(() => {
     if (!open) return;
@@ -25,6 +26,9 @@ export function EyeGuardDropdown() {
 
   return (
     <div ref={dropRef} className="relative">
+      {/* 항상 DOM에 존재 — 드롭다운 열림과 무관하게 감지 유지 */}
+      <video ref={videoRef} muted playsInline className="sr-only" />
+
       {/* 트리거 버튼 */}
       <button
         onClick={() => setOpen((v) => !v)}
@@ -40,7 +44,7 @@ export function EyeGuardDropdown() {
         <FontAwesomeIcon icon={faEye} className="text-lg" />
         {running && (
           <div className={twMerge(
-            "absolute top-[7px] right-[7px] size-2.5 rounded-full border-2 border-white",
+            "absolute top-1.75 right-1.75 size-2.5 rounded-full border-2 border-white",
             isDanger ? "bg-status-danger" : "bg-status-ok"
           )} />
         )}
@@ -65,16 +69,24 @@ export function EyeGuardDropdown() {
             </div>
           </div>
 
-          {/* 카메라 */}
-          <div className="relative h-28 bg-gray-100">
+          {/* 카메라 미리보기 */}
+          <div className="relative h-28 bg-gray-100 overflow-hidden">
             <video
-              ref={videoRef} muted playsInline
-              className={twMerge("w-full h-full object-cover [transform:scaleX(-1)]", running ? "block" : "hidden")}
+              ref={null}
+              muted playsInline
+              className="hidden"
             />
+            {/* 실제 스트림은 숨겨진 videoRef로 흐름 — 여기선 상태만 표시 */}
             {!running && (
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-1">
                 <FontAwesomeIcon icon={faEye} className="text-2xl text-gray-300" />
                 <span className="text-xs text-gray-400">카메라 꺼짐</span>
+              </div>
+            )}
+            {running && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-1">
+                <FontAwesomeIcon icon={faEye} className={twMerge("text-2xl", STATUS_TEXT[status])} />
+                <span className={twMerge("text-xs font-bold", STATUS_TEXT[status])}>{statusInfo.label}</span>
               </div>
             )}
             {isDanger && (

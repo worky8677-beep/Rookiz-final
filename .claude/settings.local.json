@@ -20,7 +20,14 @@
       "Bash(git merge:*)",
       "Bash(git stash:*)",
       "Bash(git add:*)",
-      "mcp__figma__get_design_context"
+      "mcp__figma__get_design_context",
+      "Bash(git commit -m ':*)",
+      "Bash(git push:*)",
+      "mcp__claude_ai_Figma__get_screenshot",
+      "Bash(git checkout:*)",
+      "Read(//Users/sorapark/Downloads/**)",
+      "Bash(python3 -c ':*)",
+      "Bash(git commit:*)"
     ],
     "permissions": {
       "defaultMode": "acceptEdits"

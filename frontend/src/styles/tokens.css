@@ -263,3 +263,8 @@
 @utility animate-spark {
   animation: spark 1.2s ease-in-out infinite;
 }
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateX(-50%) translateY(40px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
