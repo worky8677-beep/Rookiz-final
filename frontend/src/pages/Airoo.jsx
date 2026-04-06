@@ -112,14 +112,17 @@ export default function AiRoo() {
     setInput("");
     setLoading(true);
     try {
+      console.log("Sending to:", BACKEND); // 디버깅용
       const res = await fetch(BACKEND, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: msg }),
       });
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       const data = await res.json();
       setMessages((prev) => [...prev, { role: "bot", text: data.reply }]);
-    } catch {
+    } catch (err) {
+      console.error("AI Roo Chat Error:", err);
       setMessages((prev) => [
         ...prev,
         { role: "bot", text: "서버 연결에 실패했습니다. 다시 시도해주세요." },
