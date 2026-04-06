@@ -5,7 +5,9 @@ import { Input } from "./Input";
 
 const imgRoo = "/Airoo-circle.png";
 const imgBubble = "/Airoo-talkbubble.png";
-const BACKEND = `${import.meta.env.VITE_API_URL}/chat`;
+const BACKEND = import.meta.env.VITE_API_URL 
+  ? `${import.meta.env.VITE_API_URL}/chat`
+  : `https://rookiz.onrender.com/chat`;
 
 function ChatHeader({ onClose }) {
   return (
