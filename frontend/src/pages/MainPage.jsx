@@ -56,7 +56,12 @@ export default function MainPage({ mode: modeProp = "kids" }) {
     <div className={`min-h-screen flex flex-col items-center ${isKids ? "bg-green-100/50" : "bg-blue-100/50"}`}>
       <Nav activeTab="main" mode={mode} />
 
-      <HeroBanner image={getImageUrl(trending[0]?.backdrop_path || trending[0]?.poster_path, "original")} title={trending[0]?.title || trending[0]?.name || ""} desc={trending[0]?.overview || ""} onPlay={() => trending[0] && open(trending[0].id, "movie", "popular")} onDetail={() => trending[0] && open(trending[0].id, "movie", "popular")} />
+      <HeroBanner 
+        items={latestMovies.slice(0, 3)}
+        getImageUrl={getImageUrl}
+        onPlay={(item) => item && open(item.id, "movie", "new")} 
+        onDetail={(item) => item && open(item.id, "movie", "new")} 
+      />
 
       <main className="w-full max-w-container flex flex-col gap-6 md:gap-10">
         <AgeTabGroup activeMode={mode} />
@@ -91,7 +96,7 @@ export default function MainPage({ mode: modeProp = "kids" }) {
 
           {isKids && (
             <ContentRow title="인기 있는 캐릭터" showViewAll={false} className="px-4 md:px-10">
-              <div className="flex gap-4 md:gap-10 overflow-x-auto pb-4 scrollbar-hide">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-10">
                 {CHARACTERS.map((char) => (
                   <CharacterCard key={char.id} name={char.name} image={getImageUrl(char.poster_path)} onClick={() => navigate(`/search?q=${encodeURIComponent(char.name)}&mode=${mode}`)} />
                 ))}

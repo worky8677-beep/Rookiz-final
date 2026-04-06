@@ -7,7 +7,7 @@ export function CharacterCard({ name, image, onClick }) {
       className="flex flex-col items-center gap-2 md:gap-3 shrink-0 cursor-pointer group"
       onClick={onClick}
     >
-      <div className="w-32 h-32 md:w-[208px] md:h-[188px] rounded-2xl md:rounded-4xl bg-white overflow-hidden shadow-sm group-hover:shadow-md transition-shadow">
+      <div className="w-full aspect-square md:aspect-[208/188] lg:h-[280px] lg:aspect-auto rounded-2xl md:rounded-4xl bg-white overflow-hidden shadow-sm group-hover:shadow-md transition-shadow">
         <img
           src={image}
           alt={name}
