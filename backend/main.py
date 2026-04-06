@@ -69,3 +69,8 @@ async def chat(msg: Msg):
     except Exception as e:
         print(f"엔드포인트 오류: {e}")
         return {"reply": "서버 오류가 발생했어요. 나중에 다시 시도해주세요!"}
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
