@@ -10,7 +10,7 @@ import { Footer } from "../components/Footer";
 import { useProfile } from "../context/ProfileContext";
 import { useMission } from "../context/MissionContext";
 
-const BACKEND = `https://rookiz.onrender.com/chat`;
+const BACKEND = `https://rookiz-final-d98j.onrender.com/chat`;
 const imgRoo = "/Airoo-circle.png";
 
 const INIT_MESSAGES = [
