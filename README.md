@@ -1,79 +1,114 @@
-# 🎬 루키즈 (Rookiz)
+# 🎬 Rookiz (루키즈) - Kids OTT Platform
 
-> 만 13세 미만 아이들을 위한 키즈 OTT 서비스
+<p align="center">
+  <img src="frontend/public/LOGO.svg" width="200" alt="Rookiz Logo" />
+</p>
 
-## 프로젝트 소개
+> **"우리 아이를 위한 가장 안전한 놀이터"**  
+> 만 13세 미만 아이들을 위한 맞춤형 키즈 OTT 서비스입니다.
 
-루키즈는 **`키즈(4~7세)`**와 **`주니어(8~12세)`** 연령대에 맞춘 안전한 영상 콘텐츠 플랫폼입니다.  
-AI 가이드 캐릭터 **'루'**가 아이들의 취향에 맞는 콘텐츠를 추천하고, **눈 보호(Eye Guard)** 기능으로 적정 시청 거리를 안내합니다.
+---
 
-## 주요 기능
+## ✨ 프로젝트 개요
 
-- **연령별 맞춤 콘텐츠** — 키즈/주니어 모드에 따라 콘텐츠 필터링 및 UI 전환
-- **AI 챗봇 '루'** — HuggingFace Qwen2.5-72B 기반 맞춤 콘텐츠 추천
-- **Eye Guard** — MediaPipe 얼굴 감지를 활용한 시청 거리 보호 기능
-- **글로벌 영어 콘텐츠** — 영어 애니메이션으로 자연스러운 언어 학습
-- **프로필 관리** — 다중 프로필 + PIN 인증 기반 연령 제한
-- **비디오 플레이어** — react-player 기반 커스텀 컨트롤 UI
+루키즈는 아이들의 연령대(**키즈 4~7세** / **주니어 8~12세**)에 따라 최적화된 콘텐츠와 인터페이스를 제공합니다.  
+단순한 시청을 넘어, AI 가이드 캐릭터 **'루'**와 상호작용하고 **MediaPipe 기반의 시력 보호** 기술로 건강한 시청 습관을 만들어줍니다.
 
-## 기술 스택
+---
 
-| 영역 | 기술 |
-|------|------|
-| **프론트엔드** | React 19, Vite, Tailwind CSS v4, React Router v7, Axios |
-| **백엔드** | Python FastAPI |
-| **AI** | HuggingFace Qwen2.5-72B-Instruct |
-| **API** | TMDB API |
-| **배포** | Render |
+## 🚀 주요 핵심 기능 (Key Features)
 
-## 프로젝트 구조
+### 👶 연령별 맞춤 UI/UX
+- **모드 전환:** 프로필 선택에 따른 키즈/주니어 전용 테마 및 콘텐츠 필터링
+- **직관적 인터페이스:** 텍스트 최소화 및 아이콘 중심의 쉬운 내비게이션
 
-```
+### 🤖 AI 가이드 '루(Roo)'
+- **지능형 추천:** HuggingFace Qwen2.5 기반, 아이의 취향과 시청 패턴 분석
+- **대화형 인터페이스:** 챗봇 형태의 대화를 통한 콘텐츠 탐색 가이드
+
+### 👁️ 스마트 시력 보호 (Eye Guard)
+- **실시간 거리 감지:** MediaPipe 얼굴 감지 기술 활용
+- **자동 알림:** 화면과 너무 가까워지면 시청 제한 및 안내 메시지 출력
+- **보호자 설정:** 눈 보호 모드 활성화/비활성화 제어
+
+### 📺 프리미엄 비디오 플레이어
+- **커스텀 컨트롤:** 아이들이 조작하기 쉬운 버튼 배치 및 직관적인 타임라인
+- **자막/음성 지원:** 다국어 애니메이션 콘텐츠를 통한 자연스러운 언어 학습
+
+---
+
+## 🛠 기술 스택 (Tech Stack)
+
+### Frontend
+- **Framework:** `React 19`, `Vite`
+- **Styling:** `Tailwind CSS v4 (Alpha)`, `CSS Tokens`
+- **State Management:** `React Context API`
+- **Routing:** `React Router v7`
+- **Visuals:** `MediaPipe Face Detection`, `Framer Motion`
+
+### Backend & AI
+- **Framework:** `Python FastAPI`
+- **AI Model:** `HuggingFace Qwen2.5-72B-Instruct`
+- **External API:** `TMDB (The Movie Database) API`
+
+### Infrastructure
+- **Deployment:** `Render`
+- **Design Tools:** `Figma`, `Google Stitch`
+
+---
+
+## 📂 프로젝트 구조 (Architecture)
+
+```bash
 Rookiz/
-├── frontend/          # React 19 + Tailwind CSS v4
+├── 🎨 frontend/          # React 19 + Tailwind CSS v4
 │   ├── src/
-│   │   ├── api/       # TMDB API 호출
-│   │   ├── components/# 공용 컴포넌트 (Nav, Card, Footer 등)
-│   │   ├── context/   # 전역 상태 (Profile, MovieModal, Mission)
-│   │   ├── hooks/     # 커스텀 훅 (useEyeGuard 등)
-│   │   ├── pages/     # 페이지 (Main, Detail, Category, Search 등)
-│   │   └── styles/    # Tailwind 토큰 및 글로벌 스타일
-│   └── public/
-└── backend/           # Python FastAPI + AI 챗봇
-    └── main.py
+│   │   ├── api/          # API 통신 로직 (Axios)
+│   │   ├── components/   # 재사용 가능한 UI 컴포넌트
+│   │   ├── context/      # Profile, Movie, Mission 전역 상태
+│   │   ├── hooks/        # 시력 보호(useEyeGuard) 등 커스텀 훅
+│   │   ├── pages/        # 메인, 상세, 카테고리, 검색 페이지
+│   │   └── styles/       # 디자인 시스템 및 테마 설정
+│   └── public/           # 에셋 (로고, 비디오, 캐릭터)
+└── ⚙️ backend/           # Python FastAPI + AI 챗봇 서비스
+    └── main.py           # 추천 엔진 및 캐릭터 AI 로직
 ```
 
-## 시작하기
+---
 
-### 프론트엔드
+## ⚙️ 실행 방법 (Getting Started)
 
+### 1. Repository Clone & Setup
+```bash
+# 로컬 환경으로 이동
+cd Rookiz-final
+```
+
+### 2. Frontend 실행
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-### 백엔드
-
+### 3. Backend 실행
 ```bash
 cd backend
 pip install -r requirements.txt
 uvicorn main:app --reload
 ```
 
-### 환경 변수
+---
 
-```
-# frontend/.env
-VITE_TMDB_API_KEY=your_tmdb_api_key
+## 👥 팀 정보 및 개발 방식
 
-# backend/.env
-HF_TOKEN=your_huggingface_token
-```
+- **개발 기간:** 2026.03.24 ~ 2026.04.03 (9일)
+- **개발 도구:** **Gemini CLI** & **Claude CLI**를 활용한 고도화된 바이브 코딩 (AI-Native Development)
+- **협업 모델:** AI 에이전트와 인간 개발자의 긴밀한 페어 프로그래밍
 
-## 팀 정보
+---
 
-- **팀 규모**: 3명
-- **개발 기간**: 2026.03.24 ~ 2026.04.03 (9일)
-- **개발 방식**: Gemini CLI / Claude CLI 바이브 코딩
-- **디자인 도구**: Google Stitch, Figma
+<p align="center">
+  © 2026 Rookiz Team. All rights reserved.
+</p>
+
